@@ -8,7 +8,7 @@
 #% DESCRIPTION
 #%    This script performs a reference guided genome assembly of SARS-CoV-2. Python scripts were developed based on the wuhan SARS-CoV-2 reference genome NC_045512.2.
 #%    The workflow was developed to work with Illumina paired-end reads. Tests with other technologies should be performed.
-#%    
+#%
 #% OPTIONS
 #%    <REFERENCEGENOME>    -   Fasta file with reference genome
 #%    <001.fastq.gz>       -   Fasqt file with positive sense reads (R1)
@@ -29,7 +29,7 @@
 #%    iVar version 1.3.1
 #%    bam-readcount version: 0.8.0-unstable-7-625eea2
 #%    Python 3.7.10
-#%    mafft v7.310 (2017/Mar/17)    
+#%    mafft v7.310 (2017/Mar/17)
 #%    nextclade 0.14.2
 #%    pangolin 2.3.9
 #%    bedtools v2.26.0
@@ -46,7 +46,7 @@
 #================================================================
 #  HISTORY
 #     2021/04/17 : dezordi : Script creation
-# 
+#
 #================================================================
 # END_OF_HEADER
 #================================================================
@@ -68,28 +68,30 @@ ADAPTERS=$8 #fasta file with adapters
 # WORKFLOW
 #================================================================
 
+source activate iam_sarscov2
+
 #Creating index of reference genome
 bwa index $FASTA
 #Creating directory to store results
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
 
-#If the usar want to re-assembly the genome with a different depth treshold, only the consensus generation run will be performed
+#If the user want to re-assembly the genome with a different depth treshold, only the consensus generation run will be performed
 if [ -f "$PREFIXOUT.sorted.bam" ]; then
     samtools mpileup -a -d 50000 --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
     samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
     samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT.ivar060 -q 30 -t 0.60 -m $DEPTH -n N
     mv $PREFIXOUT.fa $PREFIXOUT.depth$DEPTH.fa
-    sed -i -e 's/>.*/>'$PREFIXOUT'/g' ./$PREFIXOUT.depth$DEPTH.fa
-    sed -i -e 's/__/\//g' -e 's/--/|/g' ./$PREFIXOUT.depth$DEPTH.fa
+    sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.fa
+    sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.fa
     mv $PREFIXOUT.ivar060.fa $PREFIXOUT.depth$DEPTH.amb.fa
-    sed -i -e 's/>.*/>'$PREFIXOUT'/g' ./$PREFIXOUT.depth$DEPTH.amb.fa
-    sed -i -e 's/__/\//g' -e 's/--/|/g' ./$PREFIXOUT.depth$DEPTH.amb.fa
+    sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.amb.fa
+    sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.amb.fa
 else
     #QUALITY CHECK
     echo "FASTP:" > $PREFIXOUT.time.txt
     start=$(date +%s%3N)
-    fastp -i ../$FASTQ1 -I ../$FASTQ2 -o $PREFIXOUT.R1.fq.gz -O $PREFIXOUT.R2.fq.gz --cut_front --cut_tail --qualified_quality_phred 20 -l $MIN_LEN -h $PREFIXOUT.quality.html --thread $THREADS --adapter_fasta ../$ADAPTERS
+    fastp -i ../$FASTQ1 -I ../$FASTQ2 -o $PREFIXOUT.R1.fq.gz -O $PREFIXOUT.R2.fq.gz --cut_front --cut_tail --qualified_quality_phred 20 -l $MIN_LEN -h $PREFIXOUT.quality.html --thread $THREADS --adapter_fasta $ADAPTERS
     end=$(date +%s%3N)
     analysis_in_miliseconds=$(expr $end - $start)
     analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
@@ -97,42 +99,47 @@ else
     #MAPPING
     echo "BWA and ivar:" >> $PREFIXOUT.time.txt
     start=$(date +%s%3N)
-    bwa mem -t $THREADS ../$FASTA $PREFIXOUT.R1.fq.gz $PREFIXOUT.R2.fq.gz | samtools sort -o $PREFIXOUT.sorted.bam
+    bwa mem -t $THREADS $FASTA $PREFIXOUT.R1.fq.gz $PREFIXOUT.R2.fq.gz | samtools sort -o $PREFIXOUT.sorted.bam
     samtools index $PREFIXOUT.sorted.bam
     #GENERATING CONSENSUS WITH MAJOR ALLELE FREQUENCIES
-    samtools mpileup -a -d 50000 --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
-    samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
-    samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT.ivar060 -q 30 -t 0.60 -m $DEPTH -n N
+    samtools mpileup -a -d 50000 --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
+    samtools mpileup -d 50000 -a --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
+    samtools mpileup -d 50000 -a --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT.ivar060 -q 30 -t 0.60 -m $DEPTH -n N
     mv $PREFIXOUT.fa $PREFIXOUT.depth$DEPTH.fa
-    sed -i -e 's/>.*/>'$PREFIXOUT'/g' ./$PREFIXOUT.depth$DEPTH.fa
-    sed -i -e 's/__/\//g' -e 's/--/|/g' ./$PREFIXOUT.depth$DEPTH.fa
+    sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.fa
+    sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.fa
     mv $PREFIXOUT.ivar060.fa $PREFIXOUT.depth$DEPTH.amb.fa
-    sed -i -e 's/>.*/>'$PREFIXOUT'/g' ./$PREFIXOUT.depth$DEPTH.amb.fa
-    sed -i -e 's/__/\//g' -e 's/--/|/g' ./$PREFIXOUT.depth$DEPTH.amb.fa
+    sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.amb.fa
+    sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.amb.fa
     echo $analysis_in_minutes >> $PREFIXOUT.time.txt
     ##GET PUTATIVE MINOR VARIANTS STEP
     echo "Minor Variant Analysis:" >> $PREFIXOUT.time.txt
-    bam-readcount -d 50000 -b 30 -q 30 -w 0 -f ../$FASTA $PREFIXOUT.sorted.bam > $PREFIXOUT.depth$DEPTH.fa.bc
-    python ../minor_finder.py -in $PREFIXOUT.depth$DEPTH.fa.bc
+    bam-readcount -d 50000 -b 30 -q 30 -w 0 -f $FASTA $PREFIXOUT.sorted.bam > $PREFIXOUT.depth$DEPTH.fa.bc
+    python $HOME/IAM_SARSCOV2/minor_finder.py -in $PREFIXOUT.depth$DEPTH.fa.bc
     sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv
-    python ../major_minor.py -in $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv
+    python3 $HOME/IAM_SARSCOV2/major_minor.py -in $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv
     #If the library contain minor variants
     if [ `wc -l $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv.fmt | awk '{print $1}'` -ge "2" ];then
-        mafft --thread $THREADS --keeplength --add $PREFIXOUT.depth$DEPTH.fa ../$FASTA > $PREFIXOUT.depth$DEPTH.fa.algn
-        python ../put_minor.py -in $PREFIXOUT.depth$DEPTH.fa.algn -mv $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv.fmt
+        mafft --quiet --thread $THREADS --keeplength --add $PREFIXOUT.depth$DEPTH.fa $FASTA > $PREFIXOUT.depth$DEPTH.fa.algn
+        python $HOME/IAM_SARSCOV2/put_minor.py -in $PREFIXOUT.depth$DEPTH.fa.algn -mv $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv.fmt
         mv $PREFIXOUT.depth$DEPTH.fa.algn.minor.fa $PREFIXOUT.depth$DEPTH.minor.fa
         cat $PREFIXOUT.depth$DEPTH.fa $PREFIXOUT.depth$DEPTH.minor.fa > $PREFIXOUT.depth$DEPTH.all.fa
-        nextclade -i $PREFIXOUT.depth$DEPTH.all.fa -c $PREFIXOUT.depth$DEPTH.all.fa.nextclade.csv --jobs $THREADS
-        pangolin $PREFIXOUT.depth$DEPTH.all.fa -t $THREADS --outfile $PREFIXOUT.depth$DEPTH.all.fa.pango.csv
+        source activate nextclade
+	nextclade -i $PREFIXOUT.depth$DEPTH.all.fa -c $PREFIXOUT.depth$DEPTH.all.fa.nextclade.csv --jobs $THREADS
+        source activate pangolin
+	pangolin $PREFIXOUT.depth$DEPTH.all.fa --outfile $PREFIXOUT.depth$DEPTH.all.fa.pango.csv
     else
-        nextclade -i $PREFIXOUT.depth$DEPTH.fa -c $PREFIXOUT.depth$DEPTH.nextclade.csv --jobs $THREADS
-        pangolin $PREFIXOUT.depth$DEPTH.fa -t $THREADS --outfile $PREFIXOUT.depth$DEPTH.fa.pango.csv
+        source activate nextclade
+	nextclade -i $PREFIXOUT.depth$DEPTH.fa -c $PREFIXOUT.depth$DEPTH.nextclade.csv --jobs $THREADS
+        source activate pangolin
+        pangolin $PREFIXOUT.depth$DEPTH.fa --outfile $PREFIXOUT.depth$DEPTH.fa.pango.csv
     fi
     ##GET ASSEMBLY METRICS
+    source activate iam_sarscov2
     bedtools bamtobed -i $PREFIXOUT.sorted.bam > $PREFIXOUT.sorted.bed
     samtools view $PREFIXOUT.sorted.bam -u | bamdst -p $PREFIXOUT.sorted.bed -o .
-    gunzip ./region.tsv.gz
-    gunzip ./depth.tsv.gz
+    gunzip region.tsv.gz
+    gunzip depth.tsv.gz
     sed -i -e 's/NC_045512\.2/'$PREFIXOUT'/g' chromosomes.report
     sed -i -e 's/__/\//g' -e 's/--/|/g' chromosomes.report
     end=$(date +%s%3N)
