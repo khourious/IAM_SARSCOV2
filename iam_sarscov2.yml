@@ -1,0 +1,19 @@
+# conda env create -f iam_sarscov2.yml
+# mamba env create -f iam_sarscov2.yml
+name: iam_sarscov2
+channels:
+  - conda-forge
+  - bioconda
+  - defaults
+dependencies:
+  - argparse
+  - bedtools
+  - bam-readcount
+  - biopython
+  - bwa
+  - fastp
+  - ivar
+  - mafft
+  - numpy
+  - pandas
+  - samtools>=1.10
