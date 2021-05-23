@@ -47,5 +47,3 @@ chmod 777 dbxcli-linux-amd64
 mv dbxcli-linux-amd64 $HOME/bin/dbxcli
 
 ln -s $HOME/IAM_SARSCOV2/iam_sarscov2 $HOME/bin
-
-ln -s $HOME/IAM_SARSCOV2/pangolin_update $HOME/bin
