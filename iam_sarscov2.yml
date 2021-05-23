@@ -17,3 +17,4 @@ dependencies:
   - numpy
   - pandas
   - samtools>=1.10
+  - seqkit
