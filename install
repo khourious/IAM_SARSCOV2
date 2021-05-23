@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod 777 -R ../IAM_SARSCOV2
+chmod 700 -R ../IAM_SARSCOV2
 
 [ -d "$HOME/miniconda3" ] && rm -rf $HOME/miniconda3 $HOME/.conda*
 
