@@ -140,7 +140,8 @@ else
     samtools view $PREFIXOUT.sorted.bam -u | bamdst -p $PREFIXOUT.sorted.bed -o .
     gunzip region.tsv.gz
     gunzip depth.tsv.gz
-    sed -i -e 's/NC_045512\.2/'$PREFIXOUT'/g' chromosomes.report
+    sed -i -e 's/MN908947\.3/'$PREFIXOUT'/g' chromosomes.report
+    sed -i -e 's/#Chromosome/Sample ID/g' chromosomes.report
     sed -i -e 's/__/\//g' -e 's/--/|/g' chromosomes.report
     end=$(date +%s%3N)
     analysis_in_miliseconds=$(expr $end - $start)
