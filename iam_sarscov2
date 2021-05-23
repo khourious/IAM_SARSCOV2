@@ -2,19 +2,39 @@
 
 start=$(date +%s.%N)
 
-[ ! -d $HOME/IAM_SARSCOV2/analysis ] && mkdir $HOME/IAM_SARSCOV2/analysis -v
+DATE="$(date +'%Y-%m-%d')"
 
-for i in $(find ./ -type f -name "*.fastq.gz"); do cp "$i" $HOME/IAM_SARSCOV2/analysis -v; done
+source activate pangolin
 
-cd $HOME/IAM_SARSCOV2/analysis
+pangolin --update
 
-for i in $(find ./ -type f -name "*R1*" -exec basename {} \;); do mv "$i" "$(echo "$i" | rev | cut -c 25- | rev)_R1.fastq.gz" -v; done
+[ ! -d $HOME/IAM_SARSCOV2/ANALYSIS ] && mkdir $HOME/IAM_SARSCOV2/ANALYSIS -v
 
-for i in $(find ./ -type f -name "*R2*" -exec basename {} \;); do mv "$i" "$(echo "$i" | rev | cut -c 25- | rev)_R2.fastq.gz" -v; done
+for i in $(find ./ -type f -name "*R1*"); do cp "$i" $HOME/IAM_SARSCOV2/ANALYSIS/"$(echo "$i" | cut -d/ -f2 | cut -d_ -f1)"_R1.fastq.gz -v; done
+
+for i in $(find ./ -type f -name "*R2*"); do cp "$i" $HOME/IAM_SARSCOV2/ANALYSIS/"$(echo "$i" | cut -d/ -f2 | cut -d_ -f1)"_R2.fastq.gz -v; done
+
+cd $HOME/IAM_SARSCOV2/ANALYSIS
 
 source activate iam_sarscov2
 
 for i in $(find ./ -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do $HOME/IAM_SARSCOV2/sars2_assembly.sh $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$i"_R1.fastq.gz "$i"_R2.fastq.gz "$i" 12 10 75 $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta; done
+
+for i in $(find ./ -type f -name "*pango.csv"); do cat "$i"; done | (sed -u 1q; sort) | uniq | sed '$d' | sed '$d' | sed -e 's/\,/\t/g' >> "$DATE"_pangolin.txt
+
+for i in $(find ./ -type f -name "*nextclade.csv"); do cat "$i"; done | (sed -u 1q; sort) | uniq | sed '$d' | sed '$d' | sed -e 's/\;/\t/g' >> "$DATE"_nextclade.txt
+
+for i in $(find ./ -type f -name "*chromosomes.report"); do cat "$i"; done | (sed -u 1q; sort) | uniq | sed '$d' >> "$DATE"_coverage.txt
+
+for i in $(find ./ -type f -name "*.depth10.minor.fa"); do cat "$i" >> "$DATE"_consensus.tmp; done
+
+for i in $(find ./ -type f -name "*.depth10.fa"); do cat "$i" >> "$DATE"_consensus.tmp; done
+
+source activate iam_sarscov2
+
+seqkit grep -vip "MN908947.3_minor" "$DATE"_consensus.tmp | seqkit sort -n - > "$DATE"_consensus.fa
+
+rm -rf *.fastq.gz *.tmp
 
 end=$(date +%s.%N)
 
