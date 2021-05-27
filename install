@@ -2,48 +2,39 @@
 
 chmod 700 -R ../IAM_SARSCOV2
 
-[ -d "$HOME/miniconda3" ] && rm -rf $HOME/miniconda3 $HOME/.conda*
+if [[ -z "$(which mamba)" ]]; then
+	cd
+	wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+	bash Miniconda3-latest-Linux-x86_64.sh -bfp miniconda3 && rm Miniconda3-latest-Linux-x86_64.sh
+	echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.bashrc
+        echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.zshrc
+	export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
+	conda install -y -c conda-forge mamba
+	mamba update -y -n base conda
+        mamba create -y -n nextclade -c conda-forge -c bioconda -c defaults nodejs nextclade_js
+        mamba create -y -n iam_sarscov2 -c conda-forge -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools>=1.10 seqkit
+	mamba create -y -n plot -c conda-forge -c bioconda -c defaults pysam numpy pandas seaborn
+	if [[ -z "$(which mamba)" ]]
+	then
+    mamba update -y -n base conda
+	mamba --version
+  else
+    mamba update -y -n base conda
+	mamba --version
+  fi
+else
+  mamba update -y -n base conda
+  mamba --version
+fi
 
-cd && wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
-
-bash Miniconda3-latest-Linux-x86_64.sh -bfp miniconda3 && rm Miniconda3-latest-Linux-x86_64.sh
-
-echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.bashrc
-
-echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.zshrc
-
-export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
-
-conda install -y -c conda-forge mamba
-
-mamba update -y -n base conda
-
-mamba env create -f iam_sarscov2.yml
-
-mamba create -y -n nextclade -c conda-forge -c bioconda -c defaults nodejs nextclade_js
-
-cd
-
-git clone https://github.com/cov-lineages/pangolin.git; cd pangolin
-
-mamba env create -f environment.yml
-
+cd && git clone https://github.com/cov-lineages/pangolin.git; cd pangolin && mamba env create -f environment.yml
 source activate pangolin
-
 python setup.py install
 
-cd
+cd && git clone https://github.com/shiquan/bamdst.git; cd bamdst && make
 
-git clone https://github.com/shiquan/bamdst.git; cd bamdst
-
-make
-
-cd
-
-wget https://github.com/dropbox/dbxcli/releases/download/v3.0.0/dbxcli-linux-amd64
-
-chmod 777 dbxcli-linux-amd64
-
-mv dbxcli-linux-amd64 $HOME/bin/dbxcli
+cd $HOME/IAM_SARSCOV2 && wget https://github.com/dropbox/dbxcli/releases/download/v3.0.0/dbxcli-linux-amd64 && chmod 700 dbxcli-linux-amd64
 
 ln -s $HOME/IAM_SARSCOV2/iam_sarscov2 $HOME/bin
+ln -s $HOME/IAM_SARSCOV2/dbxcli-linux-amd64 $HOME/bin/dbxcli
+ln -s $HOME/IAM_SARSCOV2/fastcov/fastcov.py $HOME/bin/fastcov
