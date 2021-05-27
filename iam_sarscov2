@@ -36,6 +36,14 @@ seqkit grep -vip "MN908947.3_minor" "$DATE"_consensus.tmp | seqkit sort -n - > "
 
 rm -rf *.fastq.gz *.tmp
 
+for i in $(find ./ -type f -name "*.bam" | while read o; do basename $o | cut -d. -f1; done | sort | uniq); do 
+
+source activate plot
+
+fastcov -l "$i".results/"$i".sorted.bam -o "$i".results/"$i".coverage.pdf
+
+gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH "$i".results/*.pdf -sOUTPUTFILE="$DATE"_coverage.pdf; done
+
 end=$(date +%s.%N)
 
 runtime=$(python -c "print(${end} - ${start})")
