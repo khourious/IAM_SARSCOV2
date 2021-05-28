@@ -1,6 +1,6 @@
 #!/bin/bash
 #================================================================
-# modified by lpmor22; 2021-05-26
+# modified by lpmor22; 2021-05-27
 #================================================================
 # HEADER
 #================================================================
@@ -74,15 +74,16 @@ source activate iam_sarscov2
 
 #Creating index of reference genome
 bwa index $FASTA
+
 #Creating directory to store results
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
 
 #If the user want to re-assembly the genome with a different depth treshold, only the consensus generation run will be performed
 if [ -f "$PREFIXOUT.sorted.bam" ]; then
-    samtools mpileup -a -d 50000 --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
-    samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
-    samtools mpileup -d 50000 -a --reference ../$FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT.ivar060 -q 30 -t 0.60 -m $DEPTH -n N
+    samtools mpileup -a -d 50000 --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
+    samtools mpileup -d 50000 -a --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
+    samtools mpileup -d 50000 -a --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT.ivar060 -q 30 -t 0.60 -m $DEPTH -n N
     mv $PREFIXOUT.fa $PREFIXOUT.depth$DEPTH.fa
     sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.fa
     sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.fa
