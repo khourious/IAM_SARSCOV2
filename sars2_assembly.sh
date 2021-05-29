@@ -1,6 +1,9 @@
 #!/bin/bash
+
 #================================================================
-# modified by lpmor22; 2021-05-27
+# modified by lpmor22; 2021-05-29
+#================================================================
+
 #================================================================
 # HEADER
 #================================================================
@@ -25,26 +28,24 @@
 #%    $bash sars2_assembly.sh reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa
 #%
 #% DEPENDENCIES
-#%    BWA Version: 0.7.17-r1198-dirty
-#%    samtools 1.7 Using htslib 1.7-2
+#%    BWA Version: 0.7.17-r1188
+#%    samtools 1.10 Using htslib 1.10.2
 #%    fastp 0.20.1
 #%    iVar version 1.3.1
 #%    bam-readcount version: 0.8.0-unstable-7-625eea2
-#%    Python 3.7.10
-#%    mafft v7.310 (2017/Mar/17)
-#%    nextclade 0.14.2
-#%    pangolin 2.3.9
-#%    bedtools v2.26.0
-#%    bamdst 1.0.6
+#%    Python 3.6.10
+#%    mafft v7.475 (2020/Nov/23)
+#%    bedtools v2.30.0
+#%    bamdst 1.0.9
 #%
 #================================================================
 #- IMPLEMENTATION
-#-    version         $sars2_assembly 0.0.1
-#-    authors         Filipe Dezordi and Gabriel Wallau
-#-    maintainer      Filipe Dezordi (zimmer.filipe@gmail.com)
-#-    username        dezordi
-#-    license         GPL
-#-    information     dezordi.github.io
+#-    version        $sars2_assembly 0.0.1
+#-    authors        Filipe Dezordi and Gabriel Wallau
+#-    maintainer     Filipe Dezordi (zimmer.filipe@gmail.com)
+#-    username       dezordi
+#-    license        GPL
+#-    information    dezordi.github.io
 #================================================================
 #  HISTORY
 #     2021/04/17 : dezordi : Script creation
@@ -72,14 +73,14 @@ ADAPTERS=$8 #fasta file with adapters
 
 source activate iam_sarscov2
 
-#Creating index of reference genome
+#CREATING INDEX OF REFERENCE GENOME
 bwa index $FASTA
 
-#Creating directory to store results
+#CREATING DIRECTORY TO STORE RESULTS
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
 
-#If the user want to re-assembly the genome with a different depth treshold, only the consensus generation run will be performed
+#IF THE USER WANT TO RE-ASSEMBLY THE GENOME WITH A DIFFERENT DEPTH THRESHOLD, ONLY THE CONSENSUS GENERATION RUN WILL BE PERFORMED
 if [ -f "$PREFIXOUT.sorted.bam" ]; then
     samtools mpileup -a -d 50000 --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar variants -p $PREFIXOUT -q 30 -t 0.05
     samtools mpileup -d 50000 -a --reference $FASTA $PREFIXOUT.sorted.bam  -Q 30 | ivar consensus -p  $PREFIXOUT -q 30 -t 0 -m $DEPTH -n N
@@ -115,30 +116,26 @@ else
     sed -i -e 's/>.*/>'$PREFIXOUT'/g' $PREFIXOUT.depth$DEPTH.amb.fa
     sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.amb.fa
     echo $analysis_in_minutes >> $PREFIXOUT.time.txt
-    ##GET PUTATIVE MINOR VARIANTS STEP
+    #GET PUTATIVE MINOR VARIANTS STEP
     echo "Minor Variant Analysis:" >> $PREFIXOUT.time.txt
     bam-readcount -d 50000 -b 30 -q 30 -w 0 -f $FASTA $PREFIXOUT.sorted.bam > $PREFIXOUT.depth$DEPTH.fa.bc
     python $HOME/IAM_SARSCOV2/minor_finder.py -in $PREFIXOUT.depth$DEPTH.fa.bc
     sed -i -e 's/__/\//g' -e 's/--/|/g' $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv
     python3 $HOME/IAM_SARSCOV2/major_minor.py -in $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv
-    #If the library contain minor variants
+    #IF THE LIBRARY CONTAIN MINOR VARIANTS
     if [ `wc -l $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv.fmt | awk '{print $1}'` -ge "2" ];then
         mafft --quiet --thread $THREADS --keeplength --add $PREFIXOUT.depth$DEPTH.fa $FASTA > $PREFIXOUT.depth$DEPTH.fa.algn
         python $HOME/IAM_SARSCOV2/put_minor.py -in $PREFIXOUT.depth$DEPTH.fa.algn -mv $PREFIXOUT.depth$DEPTH.fa.bc.fmt.minors.tsv.fmt
         mv $PREFIXOUT.depth$DEPTH.fa.algn.minor.fa $PREFIXOUT.depth$DEPTH.minor.fa
         cat $PREFIXOUT.depth$DEPTH.fa $PREFIXOUT.depth$DEPTH.minor.fa > $PREFIXOUT.depth$DEPTH.all.fa
-        source activate nextclade
-	nextclade -i $PREFIXOUT.depth$DEPTH.all.fa -c $PREFIXOUT.depth$DEPTH.all.fa.nextclade.csv --jobs $THREADS
-        source activate pangolin
-	pangolin $PREFIXOUT.depth$DEPTH.all.fa --outfile $PREFIXOUT.depth$DEPTH.all.fa.pango.csv
+        # nextclade -i $PREFIXOUT.depth$DEPTH.all.fa -c $PREFIXOUT.depth$DEPTH.all.fa.nextclade.csv --jobs $THREADS
+        # pangolin $PREFIXOUT.depth$DEPTH.all.fa --outfile $PREFIXOUT.depth$DEPTH.all.fa.pango.csv
     else
-        source activate nextclade
-	nextclade -i $PREFIXOUT.depth$DEPTH.fa -c $PREFIXOUT.depth$DEPTH.nextclade.csv --jobs $THREADS
-        source activate pangolin
-        pangolin $PREFIXOUT.depth$DEPTH.fa --outfile $PREFIXOUT.depth$DEPTH.fa.pango.csv
+        echo
+		# nextclade -i $PREFIXOUT.depth$DEPTH.fa -c $PREFIXOUT.depth$DEPTH.nextclade.csv --jobs $THREADS
+        # pangolin $PREFIXOUT.depth$DEPTH.fa --outfile $PREFIXOUT.depth$DEPTH.fa.pango.csv
     fi
-    ##GET ASSEMBLY METRICS
-    source activate iam_sarscov2
+    #GET ASSEMBLY METRICS
     bedtools bamtobed -i $PREFIXOUT.sorted.bam > $PREFIXOUT.sorted.bed
     samtools view $PREFIXOUT.sorted.bam -u | bamdst -p $PREFIXOUT.sorted.bed -o .
     gunzip region.tsv.gz
