@@ -4,14 +4,16 @@ start=$(date +%s.%N)
 
 DATE="$(date +'%Y-%m-%d')"
 ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
-THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}')"
+THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
 DEPTH="10" # minimum depth to mask unanssembled regions
 MINLEN="75" # minimum length to trimm sequences
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" -v
 
-for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
-for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
+for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R1.fastq.gz -v; done
+for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R2.fastq.gz -v; done
+# for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
+# for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
 
 cd "$ANALYSISDIR"
 
