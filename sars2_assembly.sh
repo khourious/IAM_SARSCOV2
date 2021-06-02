@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #================================================================
-# modified by lpmor22; 2021-05-29
+# modified by lpmor22; 2021-05-30
 #================================================================
 
 #================================================================
@@ -66,6 +66,7 @@ THREADS=$5 #number of threads
 DEPTH=$6 #minum depth to mask regions
 MIN_LEN=$7 #minimum length to trimm reads
 ADAPTERS=$8 #fasta file with adapters
+ANALYSISDIR=$9 #analysis directory
 
 #================================================================
 # WORKFLOW
@@ -77,6 +78,7 @@ source activate iam_sarscov2
 bwa index $FASTA
 
 #CREATING DIRECTORY TO STORE RESULTS
+cd "$ANALYSISDIR"
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
 
@@ -95,7 +97,7 @@ else
     #QUALITY CHECK
     echo "FASTP:" > $PREFIXOUT.time.txt
     start=$(date +%s%3N)
-    fastp -i ../$FASTQ1 -I ../$FASTQ2 -o $PREFIXOUT.R1.fq.gz -O $PREFIXOUT.R2.fq.gz --cut_front --cut_tail --qualified_quality_phred 20 -l $MIN_LEN -h $PREFIXOUT.quality.html --thread $THREADS --adapter_fasta $ADAPTERS
+    fastp -i $FASTQ1 -I $FASTQ2 -o $PREFIXOUT.R1.fq.gz -O $PREFIXOUT.R2.fq.gz --cut_front --cut_tail --qualified_quality_phred 20 -l $MIN_LEN -h $PREFIXOUT.quality.html --thread $THREADS --adapter_fasta $ADAPTERS
     end=$(date +%s%3N)
     analysis_in_miliseconds=$(expr $end - $start)
     analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
