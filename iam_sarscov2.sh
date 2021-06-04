@@ -1,7 +1,8 @@
 #!/bin/bash
 
-function background {
+function background
 
+{
    ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
 
    DEPTH="10" # minimum depth to mask unanssembled regions
@@ -26,13 +27,15 @@ function background {
 
    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report | (sed -u 1q; sort) | uniq | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"; done
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_consensus.tmp"; done
+   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_consensus.tmp"; done
+   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
    source activate iam_sarscov2
 
-   seqkit grep -vip "MN908947.3_minor" "$(pwd | awk -F/ '{print $NF}')_consensus.tmp" | seqkit sort -n > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
+   mafft --quiet --thread "$THREADS" --6merpair --addfragments "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp" $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp"
+
+   seqkit grep -vip MN908947.3_minor,MN908947.3 "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp" | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
 
    source activate plot
 
@@ -41,7 +44,6 @@ function background {
    mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
 
    rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
-
 }
 
 export -f background
