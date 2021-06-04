@@ -1,25 +1,33 @@
 #!/bin/bash
 
-DATE="$(date +'%Y-%m-%d')"
+function background
 
-THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}')"
+{
+    DATE="$(date +'%Y-%m-%d')"
 
-rm -rf *_all_*
+    THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}')"
 
-source activate nextclade
+    cat *consensus.fa > pangolin_nextclade.tmp
 
-mamba update -y -n nextclade --all
+    source activate pangolin
 
-nextclade -i *consensus.fa -j "$THREADS" -c nextclade.tmp
+    pangolin --update
 
-cat nextclade.tmp | (sed -u 1q; sort) | sed -e 's/\;/\t/g' > nextclade_all_"$DATE".txt
+    pangolin pangolin_nextclade.tmp -t "$THREADS" --outfile pangolin.tmp
 
-source activate pangolin
+    cat pangolin.tmp | (sed -u 1q; sort) | sed -e 's/\,/\t/g' > pangolin_all_"$DATE".txt
 
-pangolin --update
+    source activate nextclade
 
-pangolin *consensus.fa -t "$THREADS" --outfile pangolin.tmp
+    mamba update -y -n nextclade --all
 
-cat pangolin.tmp | (sed -u 1q; sort) | sed -e 's/\,/\t/g' > pangolin_all_"$DATE".txt
+    nextclade -i pangolin_nextclade.tmp -j "$THREADS" -c nextclade.tmp
 
-rm -rf *tmp
+    cat nextclade.tmp | (sed -u 1q; sort) | sed -e 's/\;/\t/g' > nextclade_all_"$DATE".txt
+
+    rm -rf *tmp
+}
+
+export -f background
+
+nohup bash -c background > pangolin_nextclade_log_"$(date +'%Y-%m-%d')".txt &
