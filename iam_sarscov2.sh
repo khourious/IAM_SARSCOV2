@@ -1,51 +1,62 @@
 #!/bin/bash
 
-function background
+# author: Laise de Moraes <laisepaixao@live.com>
+# institution: Oswaldo Cruz Foundation, Gonçalo Moniz Institute, Bahia, Brazil
+# URL: https://lpmor22.github.io
+# date: 10 JUN 2021
 
-{
-   ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
+background() {
 
-   DEPTH="10" # minimum depth to mask unanssembled regions
+    start=$(date +%s.%N)
 
-   MINLEN="75" # minimum length to trimm sequences
+    ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
 
-   RAWDIR=$PWD
+    DEPTH="10" # minimum depth to mask unanssembled regions
 
-   THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
+    MINLEN="75" # minimum length to trimm sequences
 
-   [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" -v
+    RAWDIR=$PWD
 
-   chmod 700 -R "$ANALYSISDIR"
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
 
-   for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
-   # for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R1.fastq.gz -v; done
+    [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" -v
 
-   for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
-   # for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R2.fastq.gz -v; done
+    chmod 700 -R "$ANALYSISDIR"
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do bash $HOME/IAM_SARSCOV2/sars2_assembly.sh $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
+    for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
+    # for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R1.fastq.gz -v; done
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report | (sed -u 1q; sort) | uniq | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"; done
+    for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
+    # for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R2.fastq.gz -v; done
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do bash $HOME/IAM_SARSCOV2/sars2_assembly.sh $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report | (sed -u 1q; sort) | uniq | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"; done
 
-   source activate iam_sarscov2
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
-   mafft --quiet --thread "$THREADS" --6merpair --addfragments "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp" $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp"
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
-   seqkit grep -vip MN908947.3_minor,MN908947.3 "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp" | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
+    source activate iam_sarscov2
 
-   source activate plot
+    mafft --quiet --thread "$THREADS" --6merpair --addfragments "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp" $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp"
 
-   for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf; done
+    seqkit grep -vip MN908947.3_minor,MN908947.3 "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp" | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
 
-   mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
+    source activate plot
 
-   rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf; done
+
+    mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
+
+    rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
+
+    end=$(date +%s.%N)
+
+    runtime=$(python -c "print(${end} - ${start})")
+
+    echo "" && echo "Done. The runtime was $runtime seconds."
+
 }
 
-export -f background
-
-nohup bash -c background > "$(pwd | awk -F/ '{print $NF}')_log.txt" &
+background &>"$(pwd | awk -F/ '{print $NF}')"_log.txt &
