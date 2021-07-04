@@ -18,11 +18,11 @@ bg() {
 
     chmod 700 -R "$ANALYSISDIR"
 
-    for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
-    # for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R1.fastq.gz -v; done
+    # for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R1.fastq.gz -v; done
+    for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R1.fastq.gz -v; done
 
-    for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
-    # for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R2.fastq.gz -v; done
+    # for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d_ -f1)"_R2.fastq.gz -v; done
+    for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | cut -d- -f1)"_R2.fastq.gz -v; done
 
     source activate iam_sarscov2
 
