@@ -1,14 +1,14 @@
 #!/bin/bash
 
+ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
+
 bg() {
 
     start=$(date +%s.%N)
 
-    ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
+    DEPTH="10"
 
-    DEPTH="10" # minimum depth to mask unanssembled regions
-
-    MINLEN="75" # minimum length to trimm sequences
+    MINLEN="75"
 
     RAWDIR=$PWD
 
@@ -54,4 +54,4 @@ bg() {
 
 }
 
-bg &>"$(pwd | awk -F/ '{print $NF}')"_log.txt &
+bg &>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log.txt &
