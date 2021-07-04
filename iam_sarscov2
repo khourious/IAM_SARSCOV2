@@ -40,7 +40,7 @@ bg() {
 
     source activate plot
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf; done
 
     mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
 
