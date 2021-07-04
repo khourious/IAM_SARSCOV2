@@ -32,7 +32,7 @@ make
 
 mkdir dbxcli; cd dbxcli; wget https://github.com/dropbox/dbxcli/releases/download/v3.0.0/dbxcli-linux-amd64; chmod 700 ./
 
-cd; git clone https://github.com/RPGillespie6/fastcov.git; cd fastcov
+cd; git clone https://github.com/RaverJay/fastcov; cd fastcov
 
 cd; git clone https://github.com/cov-lineages/pangolin.git; cd pangolin
 mamba env create -f environment.yml
