@@ -30,7 +30,7 @@ bg() {
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report | (sed -u 1q; sort) | uniq | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"; done
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
 
