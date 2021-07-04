@@ -69,8 +69,10 @@ ANALYSISDIR=$9 #analysis directory
 # WORKFLOW
 #================================================================
 
+IAM_SARSCOV2=$HOME/IAM_SARSCOV2/python_scripts
+
 #CREATING INDEX OF REFERENCE GENOME
-python bwa_index.py -in $FASTA
+python $IAM_SARSCOV2/bwa_index.py -in $FASTA
 
 #CREATING DIRECTORY TO STORE RESULTS
 cd "$ANALYSISDIR"
@@ -80,7 +82,7 @@ cd $PREFIXOUT.results
 #QUALITY CHECK
 echo "FASTP:" > $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS
+python $IAM_SARSCOV2/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
@@ -88,8 +90,8 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 #MAPPING
 echo "BWA and ivar:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
-python ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
+python $IAM_SARSCOV2/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
+python $IAM_SARSCOV2/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
@@ -97,7 +99,7 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 #GET PUTATIVE MINOR VARIANTS STEP
 echo "Minor Variant Analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS
+python $IAM_SARSCOV2/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
@@ -105,11 +107,11 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 #PANGOLIN AND NEXTCLADE
 #echo "Pangolin and Nextclade Analysis:" >> $PREFIXOUT.time.txt
 #start=$(date +%s%3N)
-#python pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
+#python $IAM_SARSCOV2/pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
 #end=$(date +%s%3N)
 #analysis_in_miliseconds=$(expr $end - $start)
 #analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
 #echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 #GET ASSEMBLY METRICS
-assembly_metrics.py -pr $PREFIXOUT
+python $IAM_SARSCOV2/assembly_metrics.py -pr $PREFIXOUT
 cd ..
