@@ -1,5 +1,7 @@
 #!/bin/bash
 
+sudo apt-get install -y zlib1g libz-dev
+
 chmod 700 -R ../IAM_SARSCOV2
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
@@ -9,29 +11,36 @@ if [[ -z "$(which conda)" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -bfp miniconda3
     rm Miniconda3-latest-Linux-x86_64.sh
+    MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
     echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
     export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
+else
     if [[ -z "$(which mamba)" ]]; then
         conda install -y -c conda-forge mamba
         mamba update -y -n base conda
-        mamba create -y -n iam_sarscov2 -c conda-forge -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10 seqkit
-        mamba create -y -n nextclade -c conda-forge -c bioconda -c defaults nodejs nextclade_js
+        mamba create -y -n iam_sarscov2 -c conda-forge -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
+        mamba create -y -n plot -c conda-forge -c bioconda -c defaults pysam numpy pandas seaborn
+    else
+        mamba update -y -n base conda
+        mamba create -y -n iam_sarscov2 -c conda-forge -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
         mamba create -y -n plot -c conda-forge -c bioconda -c defaults pysam numpy pandas seaborn
     fi
-else
-        mamba update -y -n base conda
-        mamba create -y -n iam_sarscov2 -c conda-forge -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10 seqkit
-        mamba create -y -n nextclade -c conda-forge -c bioconda -c defaults nodejs nextclade_js
-        mamba create -y -n plot -c conda-forge -c bioconda -c defaults pysam numpy pandas seaborn
 fi
 
-git clone https://github.com/cov-lineages/pangolin.git
-cd pangolin
+cd; git clone https://github.com/shiquan/bamdst.git; cd bamdst
+make
+
+mkdir dbxcli; cd dbxcli; wget https://github.com/dropbox/dbxcli/releases/download/v3.0.0/dbxcli-linux-amd64; chmod 700 ./
+
+cd; git clone https://github.com/RPGillespie6/fastcov.git; cd fastcov
+
+cd; git clone https://github.com/cov-lineages/pangolin.git; cd pangolin
 mamba env create -f environment.yml
 source activate pangolin
 python setup.py install
 
+echo 'export PATH=$HOME/bamdst:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
+echo 'export PATH=$HOME/dbxcli:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
+echo 'export PATH=$HOME/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
 echo 'export PATH=$HOME/IAM_SARSCOV2:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/IAM_SARSCOV2/bamdst:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/IAM_SARSCOV2/dbxcli:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/IAM_SARSCOV2/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
+echo 'export PATH=$HOME/IAM_SARSCOV2/python_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
