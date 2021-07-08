@@ -1,14 +1,12 @@
 #!/bin/bash
 
-#================================================================
-# THIS SCRIPTS WAS MODIFIED BY <LPMOR22> TO WORK LOCALLY
-#================================================================
+# this script has litte modifications by lpmor22 (https://github.com/khourious)
 
 #================================================================
 # HEADER
 #================================================================
 #% USAGE
-#+    $bash sars2_assembly.sh <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS>
+#+    $bash sars2_assembly <REFERENCEGENOME> <001.fastq.gz> <002.fastq.gz> <PREFIX> <NUM_THREADS> <DEPTH> <MIN_LEN> <ADAPTERS>
 #%
 #% DESCRIPTION
 #%    This script performs a reference guided genome assembly of SARS-CoV-2. Python scripts were developed based on the wuhan SARS-CoV-2 reference genome NC_045512.2.
@@ -40,7 +38,7 @@
 #%
 #================================================================
 #- IMPLEMENTATION
-#-    version         $sars2_assembly 0.0.2
+#-    version         $sars2_assembly 0.0.4
 #-    authors         Filipe Dezordi and Gabriel Wallau
 #-    maintainer      Filipe Dezordi (zimmer.filipe@gmail.com)
 #-    username        dezordi
@@ -70,17 +68,14 @@ ANALYSISDIR=$9 #analysis directory
 #================================================================
 
 IAM_SARSCOV2=$HOME/IAM_SARSCOV2/python_scripts
-
 #CREATING INDEX OF REFERENCE GENOME
 python $IAM_SARSCOV2/bwa_index.py -in $FASTA
-
 #CREATING DIRECTORY TO STORE RESULTS
 cd "$ANALYSISDIR"
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
-
 #QUALITY CHECK
-echo "FASTP:" > $PREFIXOUT.time.txt
+echo "fastp analysis:" > $PREFIXOUT.time.txt
 start=$(date +%s%3N)
 python $IAM_SARSCOV2/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS
 end=$(date +%s%3N)
@@ -88,7 +83,7 @@ analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 #MAPPING
-echo "BWA and ivar:" >> $PREFIXOUT.time.txt
+echo "BWA and iVar analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
 python $IAM_SARSCOV2/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
 python $IAM_SARSCOV2/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
@@ -96,22 +91,28 @@ end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
-#GET PUTATIVE MINOR VARIANTS STEP
-echo "Minor Variant Analysis:" >> $PREFIXOUT.time.txt
+##GET PUTATIVE MINOR VARIANTS STEP
+echo "Minor variant analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
 python $IAM_SARSCOV2/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
-#PANGOLIN AND NEXTCLADE
-#echo "Pangolin and Nextclade Analysis:" >> $PREFIXOUT.time.txt
-#start=$(date +%s%3N)
-#python $IAM_SARSCOV2/pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
-#end=$(date +%s%3N)
-#analysis_in_miliseconds=$(expr $end - $start)
-#analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
-#echo $analysis_in_minutes >> $PREFIXOUT.time.txt
-#GET ASSEMBLY METRICS
+##GET LINEAGE AND MUTATIONS
+# echo "Nextclade and Pangolin analysis:" >> $PREFIXOUT.time.txt
+# start=$(date +%s%3N)
+# python $IAM_SARSCOV2/pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
+# end=$(date +%s%3N)
+# analysis_in_miliseconds=$(expr $end - $start)
+# analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
+# echo $analysis_in_minutes >> $PREFIXOUT.time.txt
+##GET ASSEMBLY METRICS
+echo "bamdst analysis:" >> $PREFIXOUT.time.txt
+start=$(date +%s%3N)
 python $IAM_SARSCOV2/assembly_metrics.py -pr $PREFIXOUT
+end=$(date +%s%3N)
+analysis_in_miliseconds=$(expr $end - $start)
+analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
+echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 cd ..
