@@ -20,7 +20,7 @@ bg() {
 
     source activate iam_sarscov2
 
-    mamba update -y -n nextclade --all
+    mamba update -y -n iam_sarscov2 --all
 
     nextclade -i pangolin_nextclade.tmp -j "$THREADS" -c nextclade.tmp
 
