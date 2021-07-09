@@ -26,25 +26,27 @@ bg() {
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report >> stats.tmp; done
-	
-	awk '{$1=$1} 1' OFS=, stats.tmp | awk -F, '{print $1,$3,$7,$9,$10}' | tr ' ' '\t' | (sed -u 1q; sort -u) | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"
-	
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report > stats.tmp; done
+
+    sed -i -e 's/#Chromosome/SampleId/g' -e 's/Avg depth/AverageDepth/g' -e 's/Cov /Coverage/g' -e 's/%//g' stats.tmp
+
+    awk '{$1=$1} 1' OFS=, stats.tmp | awk -F, '{print $1,$3,$7,$9,$10}' | tr ' ' '\t' | (sed -u 1q; sort -u) | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"
+
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> preconsensus.tmp; done
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> preconsensus.tmp; done
 
-    mafft --quiet --thread "$THREADS" --auto --keeplength --inputorder --6merpair --leavegappyregion preconsensus.tmp $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > preconsensusAln.tmp
-
-    seqkit grep -vip MN908947.3_minor,MN908947.3 preconsensusAln.tmp | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
+    seqkit grep -vip MN908947.3_minor,MN908947.3 preconsensus.tmp | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
 
     source activate plot
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort |uniq); do fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf; done
+
+    gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf
 
     mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
 
-    # rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
+    rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
 
     end=$(date +%s.%N)
 
