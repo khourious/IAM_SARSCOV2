@@ -2,6 +2,8 @@
 
 ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
 
+[ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
+
 bg() {
 
     start=$(date +%s.%N)
@@ -14,8 +16,6 @@ bg() {
 
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
 
-    [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" -v
-
     chmod 700 -R "$ANALYSISDIR"
 
     for i in $(find ./ -type f -name "*R1*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R1.fastq.gz -v; done
@@ -24,17 +24,19 @@ bg() {
 
     source activate iam_sarscov2
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly.sh $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report | (sed -u 1q; sort) | uniq | sed '$d' >> "$(pwd | awk -F/ '{print $NF}')_stats.txt"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report >> stats.tmp; done
+	
+	awk '{$1=$1} 1' OFS=, stats.tmp | awk -F, '{print $1,$3,$7,$9,$10}' | tr ' ' '\t' | (sed -u 1q; sort -u) | sed '$d' > "$(pwd | awk -F/ '{print $NF}')_stats.txt"
+	
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> preconsensus.tmp; done
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> preconsensus.tmp; done
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp"; done
+    mafft --quiet --thread "$THREADS" --auto --keeplength --inputorder --6merpair --leavegappyregion preconsensus.tmp $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > preconsensusAln.tmp
 
-    mafft --quiet --thread "$THREADS" --6merpair --addfragments "$(pwd | awk -F/ '{print $NF}')_preconsensus.tmp" $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta > "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp"
-
-    seqkit grep -vip MN908947.3_minor,MN908947.3 "$(pwd | awk -F/ '{print $NF}')_preconsensus2.tmp" | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
+    seqkit grep -vip MN908947.3_minor,MN908947.3 preconsensusAln.tmp | seqkit sort -n | sed '/>/!y/atcgn/ATCGN/' > "$(pwd | awk -F/ '{print $NF}')_consensus.fa"
 
     source activate plot
 
