@@ -44,7 +44,7 @@ bg() {
 
     gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$(pwd | awk -F/ '{print $NF}')_coverage_depth.pdf" "$ANALYSISDIR"/*.results/*.pdf
 
-    mv $(pwd | awk -F/ '{print $NF}')* "$ANALYSISDIR"
+    mv *.tmp "$ANALYSISDIR"
 
     rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
 
