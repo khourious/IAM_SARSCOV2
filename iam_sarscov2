@@ -52,8 +52,8 @@ bg() {
 
     runtime=$(python -c "print(${end} - ${start})")
 
-    echo "" && echo "Done. The runtime was $runtime seconds."
+    echo "" && echo "Done. The runtime was $runtime seconds." && echo ""
 
 }
 
-bg &>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log.txt &
+bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log.txt &
