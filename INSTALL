@@ -22,7 +22,7 @@ else
     if [[ -z "$(which mamba)" ]]; then
         conda install -y -c conda-forge mamba
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep rnaseq)" ]]; then
+        if [[ -z "$(conda env list | grep "iam_sarscov2|plot")" ]]; then
             mamba create -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults pysam numpy pandas seaborn
         else
@@ -31,7 +31,7 @@ else
         fi
     else
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep rnaseq)" ]]; then
+        if [[ -z "$(conda env list | grep "iam_sarscov2|plot")" ]]; then
             mamba create -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults pysam numpy pandas seaborn
         else
