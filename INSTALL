@@ -17,14 +17,14 @@ if [[ -z "$(which conda)" ]]; then
     conda install -y -c conda-forge mamba
     mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
     mamba create -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
-    mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults pysam numpy pandas seaborn
+    mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
 else
     if [[ -z "$(which mamba)" ]]; then
         conda install -y -c conda-forge mamba
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
         if [[ -z "$(conda env list | grep "iam_sarscov2|plot")" ]]; then
             mamba create -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
-            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults pysam numpy pandas seaborn
+            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
             mamba update -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
             mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
@@ -33,7 +33,7 @@ else
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
         if [[ -z "$(conda env list | grep "iam_sarscov2|plot")" ]]; then
             mamba create -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
-            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults pysam numpy pandas seaborn
+            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
             mamba update -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
             mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all

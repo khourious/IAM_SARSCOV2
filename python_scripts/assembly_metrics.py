@@ -9,7 +9,7 @@ prefixout = args.prefixout
 
 try:
     os.system(f"bedtools bamtobed -i {prefixout}.sorted.bam > {prefixout}.sorted.bed \
-                    && samtools view {prefixout}.sorted.bam -u | bamdst --cutoffdepth 1000 -p {prefixout}.sorted.bed -o . \
+                    && samtools view {prefixout}.sorted.bam -u | bamdst -p {prefixout}.sorted.bed -o . \
                     && gunzip ./region.tsv.gz \
                     && gunzip ./depth.tsv.gz \
                     && sed -i -e 's/NC_045512\.2/'{prefixout}'/g' chromosomes.report \
