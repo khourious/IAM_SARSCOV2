@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS" # analysis path directory
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
@@ -22,9 +22,9 @@ bg() {
 
     for i in $(find ./ -type f -name "*R2*"); do cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R2.fastq.gz -v; done
 
-    source activate iam_sarscov2
+    source activate IGM_SARSCOV2
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IAM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IAM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IGM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do cat "$ANALYSISDIR"/*.results/chromosomes.report > stats.tmp; done
 

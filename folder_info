@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ANALYSISDIR="$HOME/IAM_SARSCOV2/ANALYSIS" # analysis path directory
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS" # analysis path directory
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
