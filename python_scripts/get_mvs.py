@@ -22,7 +22,7 @@ try:
         cmd_bwa_read = subprocess.Popen(bwa_read, stdout=bamread_output)
         cmd_bwa_read.wait()
     with open(f"{prefixout}.depth{depth}.fa.algn","w") as mafft_output:
-        mafft = (f"mafft --thread {threads} --keeplength --add {prefixout}.depth{depth}.fa {fasta_file}")
+        mafft = (f"mafft --thread {threads} --quiet --keeplength --add {prefixout}.depth{depth}.fa {fasta_file}")
         mafft = shlex.split(mafft)
         cmd_mafft = subprocess.Popen(mafft,stdout=mafft_output)
         cmd_mafft.wait()
