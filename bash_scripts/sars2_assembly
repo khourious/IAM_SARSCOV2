@@ -65,8 +65,8 @@ DEPTH=$6 #minum depth to mask regions
 MIN_LEN=$7 #minimum length to trimm reads
 ADAPTERS=$8 #fasta file with adapters
 ANALYSISDIR=$9 #analysis directory
-DP_INTRAHOST=$10 #minimum dp for intrahost analysis
-TRIMM_LEN=$11 #length to trim front and tail reads with fastp
+DP_INTRAHOST=${10-100} #minimum dp for intrahost analysis
+TRIMM_LEN=${11-0} #length to trim front and tail reads with fastp
 
 #================================================================
 # WORKFLOW
