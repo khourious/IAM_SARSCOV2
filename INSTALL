@@ -6,6 +6,9 @@ chmod 700 -R ../IGM_SARSCOV2
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
 
+echo 'export PATH=$HOME/IGM_SARSCOV2/bash_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
+echo 'export PATH=$HOME/IGM_SARSCOV2/python_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
+
 if [[ -z "$(which conda)" ]]; then
     cd
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
@@ -16,45 +19,38 @@ if [[ -z "$(which conda)" ]]; then
     export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
     conda install -y -c conda-forge mamba
     mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-    mamba create -y -n IGM_SARSCOV2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
+    mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
     mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
 else
     if [[ -z "$(which mamba)" ]]; then
         conda install -y -c conda-forge mamba
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep "IGM_SARSCOV2|plot")" ]]; then
-            mamba create -y -n IGM_SARSCOV2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
+        if [[ -z "$(conda env list | grep "igm_sarscov2|plot")" ]]; then
+            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
-            mamba update -y -n IGM_SARSCOV2 -c conda-forge -c anaconda -c bioconda -c defaults --all
+            mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
             mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
         fi
     else
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep "IGM_SARSCOV2|plot")" ]]; then
-            mamba create -y -n IGM_SARSCOV2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit
+        if [[ -z "$(conda env list | grep "igm_sarscov2|plot")" ]]; then
+            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
-            mamba update -y -n IGM_SARSCOV2 -c conda-forge -c anaconda -c bioconda -c defaults --all
+            mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
             mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
         fi
     fi
 fi
 
-cd; git clone https://github.com/shiquan/bamdst.git; cd bamdst
-make
-
-mkdir dbxcli; cd dbxcli; wget https://github.com/dropbox/dbxcli/releases/download/v3.0.0/dbxcli-linux-amd64; chmod 700 ./
+cd; git clone https://github.com/shiquan/bamdst.git; cd bamdst; make
+echo 'export PATH=$HOME/bamdst:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
 
 cd; git clone https://github.com/RaverJay/fastcov; cd fastcov
+echo 'export PATH=$HOME/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
 
 cd; git clone https://github.com/cov-lineages/pangolin.git; cd pangolin
 mamba env create -f environment.yml
 source activate pangolin
 python setup.py install
-
-echo 'export PATH=$HOME/bamdst:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/dbxcli:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/IGM_SARSCOV2:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
-echo 'export PATH=$HOME/IGM_SARSCOV2/python_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
