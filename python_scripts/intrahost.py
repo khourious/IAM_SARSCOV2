@@ -75,7 +75,7 @@ with open(bam_rc_file,'r') as bc_file, open(bam_rc_file+'.fmt.tsv','w') as bc_fo
         depth_dict = {A_depth:"A_depth",C_depth:"C_depth",G_depth:"G_depth",T_depth:"T_Depth"}
         major_depth = max(depth_dict)
         major_depth_plus = max([A_plus,C_plus,G_plus,T_plus])
-        major_depth_minus = max([A_minus,C_minus,G_minus,T_minus])     
+        major_depth_minus = max([A_minus,C_minus,G_minus,T_minus])
         if len(line) > 11: #bamreadcount output can have 11 or more columns, depending of number of putative indels
             for i in range(10,len(line)):
                 indel_depth_line = line[i].rstrip('\n')
@@ -86,7 +86,7 @@ with open(bam_rc_file,'r') as bc_file, open(bam_rc_file+'.fmt.tsv','w') as bc_fo
                     major_depth = int(major_depth) - int(indel_depth)
                 if int(indel_depth) > int(major_depth):
                     major_depth = indel_depth
-                    major_depth_column = i         
+                    major_depth_column = i
             indel_depth_line = line[major_depth_column].rstrip('\n')
             indel_seq = re.sub(r":.*","",indel_depth_line)
             indel_depth = ":".join(indel_depth_line.split(":", 2)[:2])
@@ -244,7 +244,7 @@ with open(bam_rc_file+'.fmt.tsv','r') as bam_readcount_formated:
         ['G_PLUS'] > 0.05)) & ((df['C_PLUS']/df['C_MINUS'] > 0.05) & (df['C_MINUS']/df['C_PLUS'] > 0.05)),
         #T/G/C
         (df['T_DEPTH'] >= depth_value) & (df['G_DEPTH'] > depth_value) & (df['C_DEPTH'] > depth_value) & (df['T_DEPTH']/df['DEPTH'] >= per_limit) & (df['G_DEPTH']/df['DEPTH'] >= per_limit) & (df['C_DEPTH']/df['DEPTH'] >= per_limit) & (df['A_DEPTH']/df['DEPTH'] < per_limit) & ((df['T_PLUS']/df['T_MINUS'] > 0.05) & (df['T_MINUS']/df['T_PLUS'] > 0.05)) & ((df['G_PLUS']/df['G_MINUS'] > 0.05) & (df['G_MINUS']/df['G_PLUS'] > 0.05)) & ((df['C_PLUS']/df['C_MINUS'] > 0.05) & (df['C_MINUS']/df['C_PLUS'] > 0.05)),
-        #A/T/G/C        
+        #A/T/G/C
         (df['A_DEPTH'] >= depth_value) & (df['T_DEPTH'] > depth_value) & (df['C_DEPTH'] > depth_value) & (df['G_DEPTH'] > depth_value) & (df['A_DEPTH']/df['DEPTH'] >= per_limit) & (df['T_DEPTH']/df['DEPTH'] >= per_limit) & (df['C_DEPTH']/df['DEPTH'] >= per_limit) & (df['G_DEPTH']/df['DEPTH'] >= per_limit) & ((df['A_PLUS']/df['A_MINUS'] > 0.05) & (df['A_MINUS']/df['A_PLUS'] > 0.05)) & ((df['T_PLUS']/df['T_MINUS'] > 0.05) & (df['T_MINUS']/df['T_PLUS'] > 0.05)) & ((df['C_PLUS']/df['C_MINUS'] > 0.05) & (df['C_MINUS']/df['C_PLUS'] > 0.05)) & ((df['G_PLUS']/df['G_MINUS'] > 0.05) & (df['G_MINUS']/df['G_PLUS'] > 0.05))]
     minors = ['A/T','A/C','A/G','A/INDEL','T/C','T/G','T/INDEL','C/G','C/INDEL','G/INDEL','A/T/C','A/T/G','A/G/C','T/G/C','A/T/C/G']
     df['PUTATIVE_MINOR'] = np.select(conditions,minors,default='False')
@@ -268,7 +268,7 @@ with open(bam_rc_file+'.fmt.minors.tsv','r') as minor_tsv:
     minor_depth = ''
     minor_tsv_reader = csv.reader(minor_tsv, delimiter='\t')
     for line in minor_tsv_reader:
-        if line[20] == "A/C": 
+        if line[20] == "A/C":
             if int(line[4]) > int(line[7]):
                 major = 'A'
                 minor = 'C'
