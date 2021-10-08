@@ -1,26 +1,28 @@
 IGM_SARSCOV2 - forked from dezordi/ViralFlow
 ============================================
 
-This repository contains a set of scripts to performs a reference guided genome assembly of SARS-CoV-2. Python scripts were developed based on the wuhan SARS-CoV-2 reference genome NC_045512.2. The workflow was developed to work with Illumina paired-end reads. Tests with other technologies should be performed.
+This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
 =====
 Dependencies
 =====
 
-* <igm_sarscov2> conda environment
+* <igm_sarscov2>
     * BWA Version: 0.7.17-r1188
     * samtools 1.10 Using htslib 1.10.2
     * fastp 0.22.0
     * iVar version 1.3.1
     * bam-readcount version: 0.8
-    * Python 3.6.10
     * mafft v7.487 (2021/Jul/25)
     * seqkit v2.0.0
     * seqtk 1.3-r106
     * exonerate version 2.4.0 Using glib version 2.68.0
+* <igm_sarscov2_summary>
+    *
+    *
+    *
     * pangolin 3.1.11
     * nextclade 0.14.4
-* <plot> conda environment
     * numpy 1.21.2
     * pandas 1.3.3
     * pysam 0.17.0
@@ -33,16 +35,15 @@ Files info
 .. code-block:: text
 
     IGM_SARSCOV2:
-     ├-ARTIC_V3.fasta        ### Fasta file that contains ARTIC V3 primers
-     ├-ARTIC_V4.fasta        ### Fasta file that contains ARTIC V4 primers
-     ├-FIOCRUZ-IOC_V2.fasta  ### Fasta file that contains FIOCRUZ-IOC V2 primers
-     ├-INSTALL               ### Script for install dependencies
-     ├-NC_045512.2.fasta     ### SARS-CoV-2 Reference Sequence
+     ├-DEPENDENCIES           ### Script for install dependencies
+     ├-ARTIC_V3.fasta         ### Fasta file that contains ARTIC V3 primers
+     ├-ARTIC_V4.fasta         ### Fasta file that contains ARTIC V4 primers
+     ├-FIOCRUZ-IOC_V2.fasta   ### Fasta file that contains FIOCRUZ-IOC V2 primers
+     ├-NC_045512.2.fasta      ### SARS-CoV-2 Reference Sequence
      └-bash_scripts:
-      ├-folder_info          ### Script for folder and fastq.gz ID info
-      ├-igm_sarscov2         ### Perform the genome assembly and stats (FIOCRUZ-IGM modifications)
-      ├-pangolin_nextclade   ### Run pangolin and nextclade
-      ├-sars2_assembly       ### ViralFlow script
+      ├-igm_sarscov2          ### Perform the genome assembly
+      ├-igm_sarscov2_summary  ### Do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
+      ├-sars2_assembly        ### ViralFlow script
      └-python_scripts:                       
       ├-bwa_index.py         ### Run bwa index
       ├-bwa_mem.py           ### Run bwa mem
@@ -57,17 +58,13 @@ Explained Usage
 
 .. code:: bash
 
-    folder_info
-
-.. code:: bash
-
     igm_sarscov2 <PRIMER_SCHEME>
 
 * <PRIMER_SCHEME>   -   Fasta file with PRIMER SCHEME used in the library preparation.
 
 .. code:: bash
 
-    pangolin_nextclade
+    igm_sarscov2_summary
 
 .. code-block:: text
 
@@ -107,9 +104,7 @@ Explained Usage
 =====
 Disclaimer
 =====
-* You need to run the <folder_info> and <igm_sarscov2> scripts inside the folder that contains the raw fastq files.
-* The <pangolin_nextclade> script is performed inside the IGM_SARSCOV2/ANALYSIS folder.
-* The minor consensus version is based only on replacing the nucleotide from the consensus (majority consensus) with the minor allele (supported by 5 to 49% of the reads), without any statistical method to reconstruct quasispecies genomic populations. For minor variants with percentage near of 50%, the results of this step should be curated mannualy owing the possibility of different frequencies from ivar and bam-readcount analysis.
+* You need to run the <igm_sarscov2> and <igm_sarscov2_summary> scripts inside the folder that contains the raw fastq files.
 * If you use this workflow for academic purposes, please cite the principal repository:
     * https://github.com/dezordi/ViralFlow;
     * ViralFlow: an automated workflow for SARS-CoV-2 genome assembly, lineage assignment, mutations and intrahost variants detection. DOI: 10.1101/2021.10.01.21264424.
