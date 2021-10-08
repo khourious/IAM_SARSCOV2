@@ -1,5 +1,7 @@
 #!/bin/bash
 
+PRIMERSCHEME=$1
+
 ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS" # analysis path directory
 
 echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
@@ -27,7 +29,7 @@ bg() {
 
     source activate igm_sarscov2
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IGM_SARSCOV2/nCoV-2019.reference.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/nCoV-2019.primers.fasta "$ANALYSISDIR"; done
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | while read o; do basename $o; done | cut -d_ -f1 | sort | uniq); do bash sars2_assembly $HOME/IGM_SARSCOV2/NC_045512.2.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME".fasta "$ANALYSISDIR"; done
 
     echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Coverage10x#Coverage100x#Coverage1000x#NCount" | tr '#' '\t' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
 
