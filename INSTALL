@@ -19,14 +19,14 @@ if [[ -z "$(which conda)" ]]; then
     export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
     conda install -y -c conda-forge mamba
     mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-    mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
+    mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
     mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
 else
     if [[ -z "$(which mamba)" ]]; then
         conda install -y -c conda-forge mamba
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
         if [[ -z "$(conda env list | grep "igm_sarscov2|plot")" ]]; then
-            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
+            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
             mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
@@ -35,7 +35,7 @@ else
     else
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
         if [[ -z "$(conda env list | grep "igm_sarscov2|plot")" ]]; then
-            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bedtools bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
+            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft nodejs nextclade_js numpy pandas samtools==1.10 seqkit seqtk
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
         else
             mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
