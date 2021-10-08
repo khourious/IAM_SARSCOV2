@@ -34,9 +34,9 @@
 #%    mafft v7.487 (2021/Jul/25)
 #%    nextclade 0.14.4
 #%    pangolin 3.1.11
-#%    bedtools v2.30.0
-#%    bamdst 1.0.9
+#%    seqkit v2.0.0
 #%    seqtk 1.3-r106
+#%    exonerate version 2.4.0 Using glib version 2.68.0
 #%
 #================================================================
 #- IMPLEMENTATION
