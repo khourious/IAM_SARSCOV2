@@ -49,8 +49,8 @@ bg() {
             >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}' | awk '{printf $0"#"}' | \
             tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
-        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus.fasta
-        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.fasta
+        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus.tmp
+        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.tmp
         nextclade -i "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -j "$THREADS" -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
         source activate pangolin
         pangolin "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
@@ -65,8 +65,10 @@ bg() {
     gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH \
         -sOUTPUTFILE="$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_coverage.pdf "$ANALYSISDIR"/*.results/*.pdf
 
+    source activate igm_sarscov2
+
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion \
-        --addfragments "$ANALYSISDIR"/preconsensus.fasta $HOME/IGM_SARSCOV2/NC_045512.2.fasta | \
+        --addfragments "$ANALYSISDIR"/preconsensus.tmp $HOME/IGM_SARSCOV2/NC_045512.2.fasta | \
         seqkit grep -vip NC_045512.2 | sed '/>/!y/atcgn-/ATCGNN/' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_consensus.fasta
 
     rm -rf "$ANALYSISDIR"/*.tmp
@@ -79,4 +81,4 @@ bg() {
 
 }
 
-bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_summary.txt &
+bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_summary_"$(date +'%Y-%m-%d')".txt &
