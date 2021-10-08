@@ -2,12 +2,15 @@
 
 PRIMERSCHEME=$1
 
-ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS" # analysis path directory
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
 echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
-echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log.txt"
+echo "" && echo "RAW fastq.gz folder info: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_folder_info.txt"
+echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt"
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
+
+chmod 700 -R "$ANALYSISDIR"
 
 bg() {
 
@@ -21,7 +24,10 @@ bg() {
 
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
-    chmod 700 -R "$ANALYSISDIR"
+    echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
+
+    find ./ -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
+        awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
 
     for i in $(find ./ -type f -name "*R1*"); do
         cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R1.fastq.gz -v
@@ -38,48 +44,7 @@ bg() {
             "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
     done
 
-    echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Coverage10x#Coverage100x#Coverage1000x#NCount" | \
-        tr '#' '\t' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
-        echo -n "$i""#" | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        samtools view -c "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{printf $1"#"}' | \
-            tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        samtools view -c -h -F 4 "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{printf $1"#"}' | \
-            tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{sum+=$3} END {print sum/NR}' | \
-            awk '{printf $1"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"10"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
-            awk '{printf $1"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"100"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
-            awk '{printf $1"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"1000"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
-            awk '{printf $1"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}' | awk '{printf $1"#"}' | \
-            tr '#' '\n' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
-        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus.tmp
-        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.tmp
-    done
-
-    seqkit grep -vip NC_045512.2_minor,NC_045512.2 preconsensus.tmp | seqkit sort -n > "$ANALYSISDIR"/consensus.tmp
-
-    mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion \
-        --addfragments "$ANALYSISDIR"/consensus.tmp fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | \
-        seqkit grep -vip NC_045512.2 | sed '/>/!y/atcgn-/ATCGNN/' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_consensus.fa
-
-    source activate plot
-
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
-        fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
-    done
-
-    gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH \
-        -sOUTPUTFILE="$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_coverage_depth.pdf "$ANALYSISDIR"/*.results/*.pdf
-
-    rm -rf "$ANALYSISDIR"/*.fastq.gz "$ANALYSISDIR"/*.tmp
+    rm -rf "$ANALYSISDIR"/*.fastq.gz
 
     end=$(date +%s.%N)
 
@@ -89,4 +54,4 @@ bg() {
 
 }
 
-bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log.txt &
+bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt &
