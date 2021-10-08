@@ -19,7 +19,7 @@ bg() {
 
     RAWDIR=$PWD
 
-    THREADS=10 #$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
     chmod 700 -R "$ANALYSISDIR"
 
@@ -33,7 +33,7 @@ bg() {
 
     source activate igm_sarscov2
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F./ '{print $2}' | awk -F_ '{print $1}' | sort -u); do
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
         bash sars2_assembly $HOME/IGM_SARSCOV2/NC_045512.2.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz \
             "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
     done
@@ -41,7 +41,7 @@ bg() {
     echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Coverage10x#Coverage100x#Coverage1000x#NCount" | \
         tr '#' '\t' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F./ '{print $2}' | awk -F_ '{print $1}' | sort -u); do
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
         echo -n "$i""#" | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
         samtools view -c "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{printf $1"#"}' | \
             tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_stats.txt
@@ -72,7 +72,7 @@ bg() {
 
     source activate plot
 
-    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F./ '{print $2}' | awk -F_ '{print $1}' | sort -u); do
+    for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
         fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
     done
 
