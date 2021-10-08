@@ -18,9 +18,9 @@ bg() {
 
     cat pangolin.tmp | (sed -u 1q; sort) | sed -e 's/\,/\t/g' > pangolin_all_"$DATE".txt
 
-    source activate iam_sarscov2
+    source activate igm_sarscov2
 
-    mamba update -y -n iam_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
+    mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
 
     nextclade -i pangolin_nextclade.tmp -j "$THREADS" -c nextclade.tmp
 
