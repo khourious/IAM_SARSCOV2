@@ -1,0 +1,23 @@
+#!/bin/bash
+
+bg() {
+
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
+
+    INPUT=$1
+
+    OUTPUT=$(basename ${INPUT%.*})
+
+    DATE=$(date +'%Y-%m-%d')
+
+    source activate nextclade
+
+    nextclade -i $INPUT -j "$THREADS" -c nextclade.tmp
+
+    cat nextclade.tmp | (sed -u 1q; sort) | sed -e 's/\;/\t/g' > $OUTPUT.nextclade_$DATE.txt
+
+    rm nextclade.tmp
+
+}
+
+bg $1 >/dev/null 2>&1 &
