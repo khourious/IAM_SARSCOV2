@@ -2,10 +2,7 @@
 IGM_SARSCOV2
 ************
 
-forked from dezordi/ViralFlow
-=============================
-
-This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
+This repository contains a forked from **dezordi/ViralFlow** of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
 -----------------------
 Setting up the pipeline
@@ -107,9 +104,9 @@ Explained Usage
       ├-pangolin_all_YYYY-MM-DD.txt               ### pangolin lineages information
       └-pangolin_nextclade_log_YYYY-MM-DD.txt     ### pangolin and nexclade log analysis
 
-==========
+----------
 Disclaimer
-==========
+----------
 * If you use this workflow for academic purposes, please cite the principal repository and preprint article:
     * https://github.com/dezordi/ViralFlow
     * ViralFlow: an automated workflow for SARS-CoV-2 genome assembly, lineage assignment, mutations and intrahost variants detection. Filipe Zimmer Dezordi, Túlio de Lima Campos, Pedro Miguel Carneiro Jeronimo, Cleber Furtado Aksenen, Suzana Porto Almeida, Gabriel Luz Wallau. medRxiv 2021.10.01.21264424; doi: https://doi.org/10.1101/2021.10.01.21264424
