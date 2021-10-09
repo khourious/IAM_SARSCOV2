@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod 700 -R ../IGM_SARSCOV2
+chmod 700 -R $HOME/IGM_SARSCOV2
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
 
