@@ -2,8 +2,9 @@
 IGM_SARSCOV2
 ************
 
+-----------------------------
 forked from dezordi/ViralFlow
-*****************************
+-----------------------------
 
 This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
@@ -25,15 +26,23 @@ How to use the IGM_SARSCOV2 pipeline
 
 You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation (ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
 
+- Examples:
 
 .. code:: bash
 
-    igm_sarscov2 <PRIMER_SCHEME>
+    igm_sarscov2 ARTIC_V3
+
+.. code:: bash
+
+    igm_sarscov2 ARTIC_V4
+
+.. code:: bash
+
+    igm_sarscov2 FIOCRUZ-IOC_V2
 
 .. code:: bash
 
     igm_sarscov2_summary
-
 
 ----------
 Files info
