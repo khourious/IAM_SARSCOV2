@@ -10,22 +10,22 @@ Files info
 .. code-block:: text
 
     IGM_SARSCOV2/
-     ├-DEPENDENCIES            ### Script for install and update dependencies
+     ├-DEPENDENCIES            ### script for install and update dependencies
      ├-ARTIC_V3                ### ARTIC V3 primers
      ├-ARTIC_V4                ### ARTIC V4 primers
      ├-FIOCRUZ-IOC_V2          ### FIOCRUZ-IOC V2 primers
      ├-NC_045512.2.fasta       ### SARS-CoV-2 reference sequence
      └-bash_scripts/
-      ├-igm_sarscov2           ### Perform the genome assembly
-      ├-igm_sarscov2_summary   ### Do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
+      ├-igm_sarscov2           ### perform the genome assembly
+      ├-igm_sarscov2_summary   ### do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
       ├-sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow)
      └-python_scripts/
-      ├-bwa_index.py           ### Run bwa index
-      ├-bwa_mem.py             ### Run bwa mem
-      ├-fastp.py               ### Run fastp
-      ├-get_mvs.py             ### Perform intrahost variant analysis with bam-readcount and intrahost.py
-      ├-intrahost.py           ### Identify genomic positions with multi-allele frequencies
-      └-ivar.py                ### Run ivar variant and ivar consensus
+      ├-bwa_index.py           ### run bwa index
+      ├-bwa_mem.py             ### run bwa mem
+      ├-fastp.py               ### run fastp
+      ├-get_mvs.py             ### perform intrahost variant analysis with bam-readcount and intrahost.py
+      ├-intrahost.py           ### identify genomic positions with multi-allele frequencies
+      └-ivar.py                ### run ivar variant and ivar consensus
 
 ===============
 Explained Usage
@@ -43,37 +43,37 @@ You need to run the <igm_sarscov2> and <igm_sarscov2_summary> scripts inside the
 
 .. code-block:: text
 
-    IGM_SARSCOV2:
-     └-ANALYSIS:
-      ├-"$i"_R1.fastq.gz
-      ├-"$i"_R2.fastq.gz
-      └-"$i".results:
-       ├-"$i".R1.fq.gz                           ### trimmed R1 fastq file
-       ├-"$i".R2.fq.gz                           ### trimmed R2 fastq file
-       ├-"$i".coverage.pdf                       ### 
-       ├-"$i".depth10.amb.fa                     ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth.
-       ├-"$i".depth10.fa                         ### consensus defined with iVar
-       ├-"$i".depth10.fa.algn                    ### 
-       ├-"$i".depth10.fa.algn.minor.fa           ### fasta file with minor consensus genome
-       ├-"$i".depth10.fa.bc                      ### bam-readcount output, with all nucleotide frequencies by genomic position
-       ├-"$i".depth10.fa.bc.intrahost.short.tsv  ### short tsv file with minor variant informations
-       ├-"$i".depth10.fa.bc.intrahost.tsv        ### tsv file with minor variant informations
-       ├-"$i".ivar60.qual.txt                    ### 
-       ├-"$i".qual.txt                           ### 
-       ├-"$i".quality.html                       ### html file with quality controll informations
-       ├-"$i".sorted.bam                         ### sorted bam file
-       ├-"$i".sorted.bam.bai                     ### index of sorted bam file
-       ├-"$i".time.txt                           ### time in minutes of each step of analysis.
-       ├-"$i".tsv                                ### tsv output from iVar with the frequencies of iSNVs
-       └-fastp.json                              ### 
-      ├-"$library"_consensus.fa                  ### 
-      ├-"$library"_coverage_depth.pdf            ### 
-      ├-"$library"_folder_info.txt               ### 
-      ├-"$library"_log.txt                       ### 
-      ├-"$library"_stats.txt                     ### 
-      ├-nextclade_all_YYYY-MM-DD.txt             ### nextclade csv output
-      ├-pangolin_all_YYYY-MM-DD.txt              ### pangolin lineages information
-      └-pangolin_nextclade_log_YYYY-MM-DD.txt    ### pangolin and nexclade log analysis
+    IGM_SARSCOV2/
+     └-ANALYSIS/
+      ├-"$i"_R1.fastq.gz                          ### copy of RAW R1 fastq.gz file
+      ├-"$i"_R2.fastq.gz                          ### copy of RAW R2 fastq.gz file
+      └-"$i".results/
+       ├-"$i".R1.fq.gz                            ### trimmed R1 fastq.gz file
+       ├-"$i".R2.fq.gz                            ### trimmed R2 fastq.gz file
+       ├-"$i".coverage.pdf                        ### coverage plot
+       ├-"$i".depth10.amb.fa                      ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
+       ├-"$i".depth10.fa                          ### consensus defined with iVar
+       ├-"$i".depth10.fa.algn                     ### fasta file with alignment of consensus with reference sequence
+       ├-"$i".depth10.fa.algn.minor.fa            ### fasta file with minor consensus genome
+       ├-"$i".depth10.fa.bc                       ### bam-readcount output, with all nucleotide frequencies by genomic position
+       ├-"$i".depth10.fa.bc.intrahost.short.tsv   ### short tsv file with minor variant informations
+       ├-"$i".depth10.fa.bc.intrahost.tsv         ### tsv file with minor variant informations
+       ├-"$i".ivar60.qual.txt                     ### txt file with quality control informatoins
+       ├-"$i".qual.txt                            ### txt file with quality control informations
+       ├-"$i".quality.html                        ### html file with quality control informations
+       ├-"$i".sorted.bam                          ### sorted bam file
+       ├-"$i".sorted.bam.bai                      ### index of sorted bam file
+       ├-"$i".time.txt                            ### time in minutes of each step of analysis
+       ├-"$i".tsv                                 ### tsv output from iVar with the frequencies of iSNVs
+       └-fastp.json                               ### 
+      ├-"$library"_consensus.fa                   ### 
+      ├-"$library"_coverage_depth.pdf             ### 
+      ├-"$library"_folder_info.txt                ### 
+      ├-"$library"_log.txt                        ### 
+      ├-"$library"_stats.txt                      ### 
+      ├-nextclade_all_YYYY-MM-DD.txt              ### nextclade csv output
+      ├-pangolin_all_YYYY-MM-DD.txt               ### pangolin lineages information
+      └-pangolin_nextclade_log_YYYY-MM-DD.txt     ### pangolin and nexclade log analysis
 
 ==========
 Disclaimer
