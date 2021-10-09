@@ -2,15 +2,15 @@
 IGM_SARSCOV2
 ************
 
------------------------------
+=============================
 forked from dezordi/ViralFlow
------------------------------
+=============================
 
 This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
-=======================
+-----------------------
 Setting up the pipeline
-=======================
+-----------------------
 
 Download and install the pipeline from the github repo:
 
@@ -20,13 +20,13 @@ Download and install the pipeline from the github repo:
     chmod 700 -R DEPENDENCIES
     bash DEPENDENCIES
 
-====================================
+------------------------------------
 How to use the IGM_SARSCOV2 pipeline
-====================================
+------------------------------------
 
-You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation (ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
+You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation.
 
-- Examples:
+* igm_sarscov2
 
 .. code:: bash
 
@@ -39,6 +39,8 @@ You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside
 .. code:: bash
 
     igm_sarscov2 FIOCRUZ-IOC_V2
+
+* igm_sarscov2_summay
 
 .. code:: bash
 
@@ -68,10 +70,9 @@ Files info
       ├-intrahost.py           ### identify genomic positions with multi-allele frequencies
       └-ivar.py                ### run ivar variant and ivar consensus
 
-===============
+---------------
 Explained Usage
-===============
-
+---------------
 
 .. code-block:: text
 
