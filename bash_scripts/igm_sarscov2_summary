@@ -20,8 +20,6 @@ bg() {
 
     DATE="$(date +'%Y-%m-%d')"
 
-    source activate pangolin
-
     echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#PangoLineage#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | \
         tr '#' '\t' > "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
 
@@ -51,11 +49,12 @@ bg() {
             tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus.tmp
         cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.tmp
-        nextclade -i "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -j "$THREADS" -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
         source activate pangolin
         pangolin "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
         cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $2}' | awk '{printf $0"#"}' | \
             tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
+        source activate nextclade
+        nextclade -i "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -j "$THREADS" -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
         cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv | sed -n 2p | tr ";" "\t" | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | \
             awk '{printf $0"#"}' | tr '#' '\n' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         source activate plot
