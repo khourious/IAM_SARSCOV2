@@ -46,7 +46,7 @@ bg() {
             "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
     done
 
-    rm -rf "$ANALYSISDIR"/*.fastq.gz
+    rm -rf "$ANALYSISDIR"/*.fastq.gz $HOME/IGM_SARSCOV2/MN908947.3.fasta.*
 
     end=$(date +%s.%N)
 
