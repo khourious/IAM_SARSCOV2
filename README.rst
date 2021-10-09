@@ -1,11 +1,43 @@
-IGM_SARSCOV2 - forked from dezordi/ViralFlow
-============================================
+************
+IGM_SARSCOV2
+************
+
+forked from dezordi/ViralFlow
+*****************************
 
 This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
-==========
+=======================
+Setting up the pipeline
+=======================
+
+Download and install the pipeline from the github repo:
+
+.. code:: bash
+
+    git clone --recursive https://github.com/khourious/IGM_SARSCOV2.git; cd IGM_SARSCOV2
+    chmod 700 -R DEPENDENCIES
+    bash DEPENDENCIES
+
+====================================
+How to use the IGM_SARSCOV2 pipeline
+====================================
+
+You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation (ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
+
+
+.. code:: bash
+
+    igm_sarscov2 <PRIMER_SCHEME>
+
+.. code:: bash
+
+    igm_sarscov2_summary
+
+
+----------
 Files info
-==========
+----------
 
 .. code-block:: text
 
@@ -31,15 +63,6 @@ Files info
 Explained Usage
 ===============
 
-You need to run the <igm_sarscov2> and <igm_sarscov2_summary> scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation (i.e. ARTIC_V3, ARTIC_V4, FIOCRUZ-IOC_V2).
-
-.. code:: bash
-
-    igm_sarscov2 <PRIMER_SCHEME>
-
-.. code:: bash
-
-    igm_sarscov2_summary
 
 .. code-block:: text
 
