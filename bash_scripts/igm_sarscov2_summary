@@ -4,7 +4,8 @@ ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
 echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
 echo "" && echo "Coverage plot: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_coverage.pdf"
-echo "Fasta consensus: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_consensus.fasta"
+echo "Fasta with major consensus: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_consensus.fasta"
+echo "Fasta with major and minor consensus: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_consensus_with_minor.fasta"
 echo "Statistics + Pangolin + Nextclade: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_summary.txt"
 echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_summary_"$(date +'%Y-%m-%d')".txt"
 
@@ -35,22 +36,23 @@ bg() {
         samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{sum+=$3} END {print sum/NR}' | \
             awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"10"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
+            <(fastalength $HOME/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
             awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"100"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
+            <(fastalength $HOME/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
             awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{if ($3 > '"1000"') {print $0}}' | wc -l) \
-            <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
+            <(fastalength $HOME/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | \
             awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
-        paste <(fastalength $HOME/IGM_SARSCOV2/NC_045512.2.fasta | awk '{print $1}') \
+        paste <(fastalength $HOME/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}') \
             <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}') | \
             awk -F"\t" '{printf("%0.2f\n", ($1-$2)/$1*100)}' | awk '{printf $0"#"}' | tr '#' '\t' \
             >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
         seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}' | awk '{printf $0"#"}' | \
             tr '#' '\t' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_summary.txt
-        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus.tmp
         cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.tmp
+        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
+        cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
         source activate pangolin
         pangolin "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
         cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $2}' | awk '{printf $0"#"}' | \
@@ -69,8 +71,12 @@ bg() {
     source activate igm_sarscov2
 
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion \
-        --addfragments "$ANALYSISDIR"/preconsensus.tmp $HOME/IGM_SARSCOV2/NC_045512.2.fasta | \
+        --addfragments "$ANALYSISDIR"/preconsensus.tmp $HOME/IGM_SARSCOV2/MN908947.3.fasta | \
         seqkit grep -vip NC_045512.2 | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_consensus.fasta
+
+    mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion \
+        --addfragments "$ANALYSISDIR"/preconsensus_with_minor.tmp $HOME/IGM_SARSCOV2/MN908947.3.fasta | \
+        seqkit grep -vip NC_045512.2 | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_consensus_with_minor.fasta
 
     rm -rf "$ANALYSISDIR"/*.tmp
 

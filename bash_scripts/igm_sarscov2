@@ -42,8 +42,8 @@ bg() {
     source activate igm_sarscov2
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
-        bash sars2_assembly $HOME/IGM_SARSCOV2/NC_045512.2.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz \
-            "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
+        bash sars2_assembly $HOME/IGM_SARSCOV2/MN908947.3.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz \
+            "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
     done
 
     rm -rf "$ANALYSISDIR"/*.fastq.gz
