@@ -3,64 +3,39 @@ IGM_SARSCOV2 - forked from dezordi/ViralFlow
 
 This repository contains a modification of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
-=====
-Dependencies
-=====
-
-* <igm_sarscov2>
-    * BWA Version: 0.7.17-r1188
-    * samtools 1.10 Using htslib 1.10.2
-    * fastp 0.22.0
-    * iVar version 1.3.1
-    * bam-readcount version: 0.8
-    * mafft v7.487 (2021/Jul/25)
-    * seqkit v2.0.0
-    * seqtk 1.3-r106
-    * exonerate version 2.4.0 Using glib version 2.68.0
-* <igm_sarscov2_summary>
-    *
-    *
-    *
-    * pangolin 3.1.11
-    * nextclade 0.14.4
-    * numpy 1.21.2
-    * pandas 1.3.3
-    * pysam 0.17.0
-    * seaborn 0.11.2
-
-=====
+==========
 Files info
-=====
+==========
 
 .. code-block:: text
 
-    IGM_SARSCOV2:
-     ├-DEPENDENCIES           ### Script for install dependencies
-     ├-ARTIC_V3.fasta         ### Fasta file that contains ARTIC V3 primers
-     ├-ARTIC_V4.fasta         ### Fasta file that contains ARTIC V4 primers
-     ├-FIOCRUZ-IOC_V2.fasta   ### Fasta file that contains FIOCRUZ-IOC V2 primers
-     ├-NC_045512.2.fasta      ### SARS-CoV-2 Reference Sequence
-     └-bash_scripts:
-      ├-igm_sarscov2          ### Perform the genome assembly
-      ├-igm_sarscov2_summary  ### Do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
-      ├-sars2_assembly        ### ViralFlow script
-     └-python_scripts:                       
-      ├-bwa_index.py         ### Run bwa index
-      ├-bwa_mem.py           ### Run bwa mem
-      ├-fastp.py             ### Run fastp
-      ├-get_mvs.py           ### Perform intrahost variant analysis with bam-readcount and intrahost.py
-      ├-intrahost.py         ### Identify genomic positions with multi-allele frequencies
-      └-ivar.py              ### Run ivar variant and ivar consensus
+    IGM_SARSCOV2/
+     ├-DEPENDENCIES            ### Script for install and update dependencies
+     ├-ARTIC_V3                ### ARTIC V3 primers
+     ├-ARTIC_V4                ### ARTIC V4 primers
+     ├-FIOCRUZ-IOC_V2          ### FIOCRUZ-IOC V2 primers
+     ├-NC_045512.2.fasta       ### SARS-CoV-2 reference sequence
+     └-bash_scripts/
+      ├-igm_sarscov2           ### Perform the genome assembly
+      ├-igm_sarscov2_summary   ### Do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
+      ├-sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow)
+     └-python_scripts/
+      ├-bwa_index.py           ### Run bwa index
+      ├-bwa_mem.py             ### Run bwa mem
+      ├-fastp.py               ### Run fastp
+      ├-get_mvs.py             ### Perform intrahost variant analysis with bam-readcount and intrahost.py
+      ├-intrahost.py           ### Identify genomic positions with multi-allele frequencies
+      └-ivar.py                ### Run ivar variant and ivar consensus
 
-=====
+===============
 Explained Usage
-=====
+===============
+
+You need to run the <igm_sarscov2> and <igm_sarscov2_summary> scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation (i.e. ARTIC_V3, ARTIC_V4, FIOCRUZ-IOC_V2).
 
 .. code:: bash
 
     igm_sarscov2 <PRIMER_SCHEME>
-
-* <PRIMER_SCHEME>   -   Fasta file with PRIMER SCHEME used in the library preparation.
 
 .. code:: bash
 
@@ -100,11 +75,9 @@ Explained Usage
       ├-pangolin_all_YYYY-MM-DD.txt              ### pangolin lineages information
       └-pangolin_nextclade_log_YYYY-MM-DD.txt    ### pangolin and nexclade log analysis
 
-
-=====
+==========
 Disclaimer
-=====
-* You need to run the <igm_sarscov2> and <igm_sarscov2_summary> scripts inside the folder that contains the raw fastq files.
-* If you use this workflow for academic purposes, please cite the principal repository:
-    * https://github.com/dezordi/ViralFlow;
-    * ViralFlow: an automated workflow for SARS-CoV-2 genome assembly, lineage assignment, mutations and intrahost variants detection. DOI: 10.1101/2021.10.01.21264424.
+==========
+* If you use this workflow for academic purposes, please cite the principal repository and preprint article:
+    * https://github.com/dezordi/ViralFlow
+    * ViralFlow: an automated workflow for SARS-CoV-2 genome assembly, lineage assignment, mutations and intrahost variants detection. Filipe Zimmer Dezordi, Túlio de Lima Campos, Pedro Miguel Carneiro Jeronimo, Cleber Furtado Aksenen, Suzana Porto Almeida, Gabriel Luz Wallau. medRxiv 2021.10.01.21264424; doi: https://doi.org/10.1101/2021.10.01.21264424
