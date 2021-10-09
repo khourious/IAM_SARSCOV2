@@ -20,7 +20,7 @@ Download and install the pipeline from the github repo:
 How to use the IGM_SARSCOV2 pipeline
 ------------------------------------
 
-You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts inside the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation.
+You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts **inside** the folder that contains the RAW fastq.gz files. For <igm_sarscov2> you need to set the PRIMER SCHEME used in the library preparation.
 
 * igm_sarscov2
 
@@ -53,9 +53,9 @@ Files info
      ├── ARTIC_V3                ### ARTIC V3 primers
      ├── ARTIC_V4                ### ARTIC V4 primers
      ├── FIOCRUZ-IOC_V2          ### FIOCRUZ-IOC V2 primers
-     ├── NC_045512.2.fasta       ### SARS-CoV-2 reference sequence
+     ├── MN908947.3.fasta        ### SARS-CoV-2 reference sequence
      └── bash_scripts/
-      ├── igm_sarscov2           ### perform the genome assembly
+      ├── igm_sarscov2           ### perform the genome assembly using ViralFlow script
       ├── igm_sarscov2_summary   ### do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
       ├── sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow)
      └── python_scripts/
@@ -64,7 +64,7 @@ Files info
       ├── fastp.py               ### run fastp
       ├── get_mvs.py             ### perform intrahost variant analysis with bam-readcount and intrahost.py
       ├── intrahost.py           ### identify genomic positions with multi-allele frequencies
-      └── ivar.py                ### run ivar variant and ivar consensus
+      └── ivar.py                ### run iVar variant and iVar consensus
 
 ------------
 Results info
@@ -82,27 +82,28 @@ Results info
        ├── "$i".coverage.pdf                        ### coverage plot
        ├── "$i".depth10.amb.fa                      ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
        ├── "$i".depth10.fa                          ### consensus defined with iVar
-       ├── "$i".depth10.fa.algn                     ### fasta file with alignment of consensus with reference sequence
-       ├── "$i".depth10.fa.algn.minor.fa            ### fasta file with minor consensus genome
+       ├── "$i".depth10.fa.algn                     ### alignment of consensus with reference sequence
+       ├── "$i".depth10.fa.algn.minor.fa            ### minor consensus genome
        ├── "$i".depth10.fa.bc                       ### bam-readcount output, with all nucleotide frequencies by genomic position
-       ├── "$i".depth10.fa.bc.intrahost.short.tsv   ### short tsv file with minor variant informations
-       ├── "$i".depth10.fa.bc.intrahost.tsv         ### tsv file with minor variant informations
-       ├── "$i".ivar60.qual.txt                     ### txt file with quality control informatoins
-       ├── "$i".qual.txt                            ### txt file with quality control informations
-       ├── "$i".quality.html                        ### html file with quality control informations
+       ├── "$i".depth10.fa.bc.intrahost.short.tsv   ### summary of minor variant informations
+       ├── "$i".depth10.fa.bc.intrahost.tsv         ### minor variant informations
+       ├── "$i".ivar60.qual.txt                     ### iVar quality call consensus (frequency threshold: 0.60)
+       ├── "$i".lineage_report.csv                  ### pangolin lineage analysis
+       ├── "$i".nextclade.csv                       ### nextclade analysis
+       ├── "$i".qual.txt                            ### iVar quality call consensus
+       ├── "$i".quality.html                        ### fastp quality control informations
        ├── "$i".sorted.bam                          ### sorted bam file
        ├── "$i".sorted.bam.bai                      ### index of sorted bam file
        ├── "$i".time.txt                            ### time in minutes of each step of analysis
-       ├── "$i".tsv                                 ### tsv output from iVar with the frequencies of iSNVs
-       └── fastp.json                               ### 
-      ├── "$library"_consensus.fa                   ### 
-      ├── "$library"_coverage_depth.pdf             ### 
-      ├── "$library"_folder_info.txt                ### 
-      ├── "$library"_log.txt                        ### 
-      ├── "$library"_stats.txt                      ### 
-      ├── nextclade_all_YYYY-MM-DD.txt              ### nextclade csv output
-      ├── pangolin_all_YYYY-MM-DD.txt               ### pangolin lineages information
-      └── pangolin_nextclade_log_YYYY-MM-DD.txt     ### pangolin and nexclade log analysis
+       ├── "$i".tsv                                 ### iVar with the frequencies of iSNVs
+       └── fastp.json                               ### metafile of fastp quality control informations
+      ├── "$library"_consensus.fasta                ### multifasta with major consensus genomes
+      ├── "$library"_consensus_with_minor.fasta     ### multifasta with major and minor consensus genomes
+      ├── "$library"_coverage.pdf                   ### library coverage plot
+      ├── "$library"_folder_info.txt                ### RAW fastq.gz folder info
+      ├── "$library"_log_assembly_YYYY-MM-DD.txt    ### assembly log analysis
+      ├── "$library"_log_summary_YYYY-MM-DD.txt     ### summary log analysis
+      └── "$library"_summary.txt                    ### summary of statistics, pangolin and nextclade
 
 ----------
 Disclaimer
