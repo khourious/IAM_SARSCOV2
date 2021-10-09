@@ -24,7 +24,9 @@ bg() {
 
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
-    echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
+    if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt" ]; then
+        echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
+    fi
 
     find ./ -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
         awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
