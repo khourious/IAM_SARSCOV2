@@ -6,9 +6,7 @@ OUTPUT="$(basename ${INPUT%.*})"
 
 bg() {
 
-    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
-
-    DATE="$(date +'%Y-%m-%d')"
+    THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
 
     pangolin --update
 
@@ -31,4 +29,4 @@ bg() {
 
 }
 
-bg "$1" &>>"$OUTPUT"_pangonext_log_"$(date +'%Y-%m-%d')".txt &
+bg "$1" &>>"$OUTPUT"_log_pangonext_"$(date +'%Y-%m-%d')".txt &
