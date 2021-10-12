@@ -1,11 +1,11 @@
 #!/bin/bash
 
-PRIMERSCHEME=$1
+PRIMERSCHEME="$1"
 
 ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
 echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
-echo "" && echo "RAW fastq.gz folder info: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_folder_info.txt"
+echo "" && echo "RAW fastq.gz folder info: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_folder_info_"$(date +'%Y-%m-%d')".txt"
 echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt"
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
@@ -14,22 +14,22 @@ chmod 700 -R "$ANALYSISDIR"
 
 bg() {
 
-    start=$(date +%s.%N)
+    start="$(date +%s.%N)"
 
     DEPTH="10"
 
     MINLEN="75"
 
-    RAWDIR=$PWD
+    RAWDIR="$PWD"
 
-    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
+    THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')"
 
     if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt" ]; then
-        echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
+        echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_"$(date +'%Y-%m-%d')".txt"
     fi
 
     find ./ -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
-        awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt"
+        awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_"$(date +'%Y-%m-%d')".txt"
 
     for i in $(find ./ -type f -name "*R1*"); do
         cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R1.fastq.gz -v
@@ -42,18 +42,18 @@ bg() {
     source activate igm_sarscov2
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | sort -u); do
-        bash sars2_assembly $HOME/IGM_SARSCOV2/MN908947.3.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz \
-            "$i" "$THREADS" "$DEPTH" "$MINLEN" $HOME/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
+        bash sars2_assembly "$HOME"/IGM_SARSCOV2/MN908947.3.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz \
+            "$i" "$THREADS" "$DEPTH" "$MINLEN" "$HOME"/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
     done
 
-    rm -rf "$ANALYSISDIR"/*.fastq.gz $HOME/IGM_SARSCOV2/MN908947.3.fasta.*
+    rm -rf "$ANALYSISDIR"/*.fastq.gz "$HOME"/IGM_SARSCOV2/MN908947.3.fasta.*
 
-    end=$(date +%s.%N)
+    end="$(date +%s.%N)"
 
-    runtime=$(python -c "print(${end} - ${start})")
+    runtime="$(python -c "print(${end} - ${start})")"
 
-    echo "" && echo "Done. The runtime was $runtime seconds." && echo ""
+    echo "" && echo "Done. The runtime was "$runtime" seconds." && echo ""
 
 }
 
-bg &>>$ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt &
+bg &>>"$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt &
