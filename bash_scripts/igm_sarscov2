@@ -4,9 +4,9 @@ PRIMERSCHEME="$1"
 
 ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
-echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
-echo "" && echo "RAW fastq.gz folder info: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_folder_info_"$(date +'%Y-%m-%d')".txt"
-echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt"
+echo "" && echo "Output path: "$HOME"/IGM_SARSCOV2/ANALYSIS"
+echo "" && echo "RAW fastq.gz folder info: "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_folder_info_"$(date +'%Y-%m-%d')".txt"
+echo "" && echo "Log Analysis: "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$PRIMERSCHEME"_"$(date +'%Y-%m-%d')".txt"
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
@@ -56,4 +56,4 @@ bg() {
 
 }
 
-bg &>>"$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$(date +'%Y-%m-%d')".txt &
+bg &>>"$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_log_assembly_"$PRIMERSCHEME"_"$(date +'%Y-%m-%d')".txt &
