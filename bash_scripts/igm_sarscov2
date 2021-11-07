@@ -31,11 +31,11 @@ bg() {
     find ./ -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
         awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_"$(date +'%Y-%m-%d')".txt"
 
-    for i in $(find ./ -type f -name "*R1*"); do
+    for i in $(find ./ -type f -name "*_R1_*"); do
         cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R1.fastq.gz -v
     done
 
-    for i in $(find ./ -type f -name "*R2*"); do
+    for i in $(find ./ -type f -name "*_R2_*"); do
         cp "$i" "$ANALYSISDIR"/"$(echo "$i" | awk -F'/' '{print $(NF-1)}' | awk -F"-|_" '{print $1}')"_R2.fastq.gz -v
     done
 
