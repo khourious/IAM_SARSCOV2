@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod 700 -R $HOME/IGM_SARSCOV2
+chmod 700 -R $HOME/IGM_SARSCOV2/bash_scripts $HOME/IGM_SARSCOV2/python_scripts
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
 
