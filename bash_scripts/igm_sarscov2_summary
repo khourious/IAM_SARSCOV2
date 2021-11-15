@@ -13,11 +13,11 @@ echo "" && echo "Log Analysis: $ANALYSISDIR/"$(pwd | awk -F/ '{print $NF}')"_log
 
 bg() {
 
-    start="$(date +%s.%N)"
+    start=$(date +%s.%N)
 
     RAWDIR="$PWD"
 
-    THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')"
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
     echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#NCountPercent#PangolinVersion#PangoLearnVersion#PangoLineage#NextcladeVersion#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | \
         tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
@@ -96,9 +96,9 @@ bg() {
 
     rm -rf "$ANALYSISDIR"/*.tmp
 
-    end="$(date +%s.%N)"
+    end=$(date +%s.%N)
 
-    runtime="$(python -c "print(${end} - ${start})")"
+    runtime=$(python -c "print(${end} - ${start})")
 
     echo "" && echo "Done. The runtime was "$runtime" seconds." && echo ""
 

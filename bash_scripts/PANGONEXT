@@ -2,11 +2,11 @@
 
 INPUT="$1"
 
-OUTPUT="$(basename ${INPUT%.*})"
+OUTPUT=$(basename ${INPUT%.*})
 
 bg() {
 
-    THREADS="$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')"
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p')
 
     pangolin --update
 
