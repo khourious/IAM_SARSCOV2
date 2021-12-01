@@ -14,7 +14,6 @@ if [[ -z "$(which conda)" ]]; then
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -bfp miniconda3
     rm Miniconda3-latest-Linux-x86_64.sh
-    MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
     echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/.${MYSHELL}rc
     export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
     conda install -y -c conda-forge mamba
@@ -30,10 +29,6 @@ else
             mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft numpy pandas samtools==1.10 seqkit seqtk zlib
             mamba create -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults nextclade_js
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
-        else
-            mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
-            mamba update -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults --all
-            mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
         fi
     else
         mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
@@ -41,10 +36,6 @@ else
             mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft numpy pandas samtools==1.10 seqkit seqtk zlib
             mamba create -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults nextclade_js
             mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
-        else
-            mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
-            mamba update -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults --all
-            mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
         fi
     fi
 fi
@@ -67,7 +58,4 @@ if [[ -z "$(which pangolin)" ]]; then
     mamba env create -f environment.yml
     source activate pangolin
     python setup.py install
-else
-    pangolin --update
-    pangolin --all-versions
 fi
