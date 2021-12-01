@@ -14,7 +14,7 @@ Download and install the pipeline from the github repo:
 
     git clone --recursive https://github.com/khourious/IGM_SARSCOV2.git; cd IGM_SARSCOV2
     chmod 700 -R DEPENDENCIES
-    bash DEPENDENCIES
+    bash INSTALL
 
 ------------------------------------
 How to use the IGM_SARSCOV2 pipeline
@@ -41,7 +41,7 @@ Files info
 .. code-block:: text
 
     IGM_SARSCOV2/
-     ├── DEPENDENCIES            ### script for install and update dependencies
+     ├── INSTALL                 ### script for install dependencies
      ├── ARTIC_V3                ### ARTIC V3 primers
      ├── ARTIC_V4                ### ARTIC V4 primers
      ├── FIOCRUZ-IOC_V2          ### FIOCRUZ-IOC V2 primers
@@ -49,7 +49,8 @@ Files info
      └── bash_scripts/
       ├── igm_sarscov2           ### perform the genome assembly using ViralFlow script
       ├── igm_sarscov2_summary   ### do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
-      ├── sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow)
+      ├── igm_sarscov2_update    ### script for update dependencies
+      ├── sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow) - v.0.0.5
      └── python_scripts/
       ├── bwa_index.py           ### run bwa index
       ├── bwa_mem.py             ### run bwa mem
