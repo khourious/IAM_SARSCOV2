@@ -89,7 +89,7 @@ bg() {
 
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments \
         "$ANALYSISDIR"/preconsensus_with_minor.tmp "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | seqkit grep \
-        -vip MN908947.3,MN908947.3_minor | sed '/>/!y/atcgn-/ATCGN-/' >> "$ANALYSISDIR"/preconsensus_with_minor_2.tmp
+        -vip MN908947.3,MN908947.3_minor | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/preconsensus_with_minor_2.tmp
 
     seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp \
         -o "$ANALYSISDIR"/"$(pwd | awk -F/ '{print $NF}')"_consensus_with_minor_"$(date +'%Y-%m-%d')".fasta
