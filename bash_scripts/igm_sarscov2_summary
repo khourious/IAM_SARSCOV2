@@ -2,13 +2,6 @@
 
 ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
-echo "" && echo "Output path: $HOME/IGM_SARSCOV2/ANALYSIS"
-echo "" && echo "Coverage plot: $ANALYSISDIR/$(pwd | awk -F/ '{print $NF}')_coverage_$(uname -n)_$(date +'%Y-%m-%d').pdf"
-echo "Fasta consensus: $ANALYSISDIR/$(pwd | awk -F/ '{print $NF}')_consensus_$(uname -n)_$(date +'%Y-%m-%d').fasta"
-echo "Fasta with minor consensus: $ANALYSISDIR/$(pwd | awk -F/ '{print $NF}')_consensus_with_minor_$(uname -n)_$(date +'%Y-%m-%d')".fasta"
-echo "Statistics assembly and lineage analysis: $ANALYSISDIR/$(pwd | awk -F/ '{print $NF}')_summary_$(uname -n)_$(date +'%Y-%m-%d')".txt"
-echo "" && echo "Log Analysis: $ANALYSISDIR/$(pwd | awk -F/ '{print $NF}')_log_summary_$(uname -n)_$(date +'%Y-%m-%d').txt"
-
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
 bg() {
