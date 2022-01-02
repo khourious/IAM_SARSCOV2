@@ -1,10 +1,18 @@
 #!/bin/bash
 
-mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
-mamba update -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults --all
+[ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
-mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
+bg() {
 
-source activate pangolin
-pangolin --update
+    mamba update -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults --all
+    mamba update -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults --all
+    mamba update -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults --all
+
+    source activate pangolin
+    pangolin --update
+
+}
+
+bg &>>"$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_update_$(uname -n)_$(date +'%Y-%m-%d').txt &
