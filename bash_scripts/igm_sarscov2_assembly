@@ -1,0 +1,62 @@
+#!/bin/bash
+
+PRIMERSCHEME="$1"
+
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
+
+[ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
+
+bg() {
+
+    start=$(date +%s.%N)
+
+    MINLEN="75"
+
+    RAWDIR="$PWD"
+
+    THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
+
+    if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt" ]; then
+        echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_$(date +'%Y-%m-%d').txt"
+    fi
+
+    find ./ -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
+        awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_$(date +'%Y-%m-%d').txt"
+
+    for i in $(find ./ -type f -name "*_R1_*"); do
+        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F'/' '{print $(NF)}' | awk -F"-|_" '{print $1}')_R1.fastq.gz -v
+    done
+
+    for i in $(find ./ -type f -name "*_R2_*"); do
+        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F'/' '{print $(NF)}' | awk -F"-|_" '{print $1}')_R2.fastq.gz -v
+    done
+
+    source activate igm_sarscov2
+
+    if [[ "$PRIMERSCHEME" == "RPIP" ]]; then
+        for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | \
+            awk -F_ '{print $1}' | sort -u); do
+                bash sars2_assembly "$HOME"/IGM_SARSCOV2/MN908947.3.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz \
+                    "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" 5 "$MINLEN" \
+                    "$HOME"/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
+        done
+    else
+        for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | \
+            awk -F_ '{print $1}' | sort -u); do
+                bash sars2_assembly "$HOME"/IGM_SARSCOV2/MN908947.3.fasta "$ANALYSISDIR"/"$i"_R1.fastq.gz \
+                    "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" 10 "$MINLEN" \
+                    "$HOME"/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
+        done
+    fi
+
+    rm -rf "$ANALYSISDIR"/*.fastq.gz "$HOME"/IGM_SARSCOV2/MN908947.3.fasta.*
+
+    end=$(date +%s.%N)
+
+    runtime=$(python -c "print(${end} - ${start})")
+
+    echo "" && echo "Done. The runtime was "$runtime" seconds." && echo ""
+
+}
+
+bg &>>"$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_log_assembly_"$PRIMERSCHEME"_$(uname -n)_$(date +'%Y-%m-%d').txt &
