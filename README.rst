@@ -20,19 +20,14 @@ Download and install the pipeline from the github repo:
 How to use the IGM_SARSCOV2 pipeline
 ------------------------------------
 
-You need to run the ``igm_sarscov2`` and ``igm_sarscov2_summary`` scripts **inside** the folder that contains the RAW fastq.gz files. For ``igm_sarscov2`` you need to set the PRIMER SCHEME used in the library preparation (ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
-
 * igm_sarscov2
 
 .. code:: bash
 
     igm_sarscov2 ARTIC_V4
 
-* igm_sarscov2_summay
-
-.. code:: bash
-
-    igm_sarscov2_summary
+* You need to run the script **inside** the folder that contains the RAW fastq.gz files.
+* You need to set the PRIMER SCHEME used in the library preparation (i.e.: ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
 
 ----------
 Files info
@@ -90,13 +85,14 @@ Results info
        ├── "$i".time.txt                            ### time in minutes of each step of analysis
        ├── "$i".tsv                                 ### iVar with the frequencies of iSNVs
        └── fastp.json                               ### metafile of fastp quality control informations
-      ├── "$library"_consensus.fasta                ### multifasta with major consensus genomes
-      ├── "$library"_consensus_with_minor.fasta     ### multifasta with major and minor consensus genomes
-      ├── "$library"_coverage.pdf                   ### library coverage plot
-      ├── "$library"_folder_info.txt                ### RAW fastq.gz folder info
-      ├── "$library"_log_assembly_YYYY-MM-DD.txt    ### assembly log analysis
-      ├── "$library"_log_summary_YYYY-MM-DD.txt     ### summary log analysis
-      └── "$library"_summary.txt                    ### summary of statistics, pangolin and nextclade
+      ├── RAW_FOLDER_NAME_consensus_HOSTNAME_YYYY-MM-DD.fasta                ### multifasta with major consensus genomes
+      ├── RAW_FOLDER_NAME_consensus_with_minor_HOSTNAME_YYYY-MM-DD.fasta     ### multifasta with major and minor consensus genomes
+      ├── RAW_FOLDER_NAME_coverage_HOSTNAME_YYYY-MM-DD.pdf                   ### library coverage plot
+      ├── RAW_FOLDER_NAME_folder_info_HOSTNAME_YYYY-MM-DD.txt                ### RAW fastq.gz folder info
+      ├── RAW_FOLDER_NAME_log_assembly_PRIMERSCHEME_HOSTNAME_YYYY-MM-DD.txt  ### assembly log analysis
+      ├── RAW_FOLDER_NAME_log_summary_HOSTNAME_YYYY-MM-DD.txt                ### summary log analysis
+      ├── RAW_FOLDER_NAME_summary_HOSTNAME_YYYY-MM-DD.txt                    ### summary of statistics, pangolin and nextclade
+      └── RAW_FOLDER_NAME_update_HOSTNAME_YYYY-MM-DD.txt                     ### update dependencies log
 
 ----------
 Disclaimer
