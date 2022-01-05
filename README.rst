@@ -62,37 +62,37 @@ Results info
 
     IGM_SARSCOV2/
      └── ANALYSIS/
-      ├── "$i"_R1.fastq.gz                          ### copy of RAW R1 fastq.gz file
-      ├── "$i"_R2.fastq.gz                          ### copy of RAW R2 fastq.gz file
+      ├── "$i"_R1.fastq.gz                                                     ### temporary copy of RAW R1 fastq.gz file
+      ├── "$i"_R2.fastq.gz                                                     ### temporary copy of RAW R2 fastq.gz file
       └── "$i".results/
-       ├── "$i".R1.fq.gz                            ### trimmed R1 fastq.gz file
-       ├── "$i".R2.fq.gz                            ### trimmed R2 fastq.gz file
-       ├── "$i".coverage.pdf                        ### coverage plot
-       ├── "$i".depth10.amb.fa                      ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
-       ├── "$i".depth10.fa                          ### consensus defined with iVar
-       ├── "$i".depth10.fa.algn                     ### alignment of consensus with reference sequence
-       ├── "$i".depth10.fa.algn.minor.fa            ### minor consensus genome
-       ├── "$i".depth10.fa.bc                       ### bam-readcount output, with all nucleotide frequencies by genomic position
-       ├── "$i".depth10.fa.bc.intrahost.short.tsv   ### summary of minor variant informations
-       ├── "$i".depth10.fa.bc.intrahost.tsv         ### minor variant informations
-       ├── "$i".ivar60.qual.txt                     ### iVar quality call consensus (frequency threshold: 0.60)
-       ├── "$i".lineage_report.csv                  ### pangolin lineage analysis
-       ├── "$i".nextclade.csv                       ### nextclade analysis
-       ├── "$i".qual.txt                            ### iVar quality call consensus
-       ├── "$i".quality.html                        ### fastp quality control informations
-       ├── "$i".sorted.bam                          ### sorted bam file
-       ├── "$i".sorted.bam.bai                      ### index of sorted bam file
-       ├── "$i".time.txt                            ### time in minutes of each step of analysis
-       ├── "$i".tsv                                 ### iVar with the frequencies of iSNVs
-       └── fastp.json                               ### metafile of fastp quality control informations
-      ├── RAW_FOLDER_NAME_consensus_HOSTNAME_YYYY-MM-DD.fasta                ### multifasta with major consensus genomes
-      ├── RAW_FOLDER_NAME_consensus_with_minor_HOSTNAME_YYYY-MM-DD.fasta     ### multifasta with major and minor consensus genomes
-      ├── RAW_FOLDER_NAME_coverage_HOSTNAME_YYYY-MM-DD.pdf                   ### library coverage plot
-      ├── RAW_FOLDER_NAME_folder_info_HOSTNAME_YYYY-MM-DD.txt                ### RAW fastq.gz folder info
-      ├── RAW_FOLDER_NAME_log_assembly_PRIMERSCHEME_HOSTNAME_YYYY-MM-DD.txt  ### assembly log analysis
-      ├── RAW_FOLDER_NAME_log_summary_HOSTNAME_YYYY-MM-DD.txt                ### summary log analysis
-      ├── RAW_FOLDER_NAME_summary_HOSTNAME_YYYY-MM-DD.txt                    ### summary of statistics, pangolin and nextclade
-      └── RAW_FOLDER_NAME_update_HOSTNAME_YYYY-MM-DD.txt                     ### update dependencies log
+       ├── "$i".R1.fq.gz                                                       ### trimmed R1 fastq.gz file
+       ├── "$i".R2.fq.gz                                                       ### trimmed R2 fastq.gz file
+       ├── "$i".coverage.pdf                                                   ### coverage plot
+       ├── "$i".depth10.amb.fa                                                 ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
+       ├── "$i".depth10.fa                                                     ### consensus defined with iVar
+       ├── "$i".depth10.fa.algn                                                ### alignment of consensus with reference sequence
+       ├── "$i".depth10.fa.algn.minor.fa                                       ### minor consensus genome
+       ├── "$i".depth10.fa.bc                                                  ### nucleotide frequencies by genomic position
+       ├── "$i".depth10.fa.bc.intrahost.short.tsv                              ### summary of minor variant informations
+       ├── "$i".depth10.fa.bc.intrahost.tsv                                    ### minor variant informations
+       ├── "$i".ivar60.qual.txt                                                ### iVar quality call consensus (frequency threshold: 0.60)
+       ├── "$i".lineage_report.csv                                             ### pangolin lineage analysis
+       ├── "$i".nextclade.csv                                                  ### nextclade analysis
+       ├── "$i".qual.txt                                                       ### iVar quality call consensus
+       ├── "$i".quality.html                                                   ### fastp quality control informations
+       ├── "$i".sorted.bam                                                     ### sorted bam file
+       ├── "$i".sorted.bam.bai                                                 ### index of sorted bam file
+       ├── "$i".time.txt                                                       ### time in minutes of each step of analysis
+       ├── "$i".tsv                                                            ### iVar with the frequencies of iSNVs
+       └── fastp.json                                                          ### metafile of fastp quality control informations
+      ├── RAW_FOLDER_NAME_consensus_HOSTNAME_YYYY-MM-DD.fasta                  ### multifasta with major consensus genomes
+      ├── RAW_FOLDER_NAME_consensus_with_minor_HOSTNAME_YYYY-MM-DD.fasta       ### multifasta with major and minor consensus genomes
+      ├── RAW_FOLDER_NAME_coverage_HOSTNAME_YYYY-MM-DD.pdf                     ### library coverage plot
+      ├── RAW_FOLDER_NAME_folder_info_HOSTNAME_YYYY-MM-DD.txt                  ### RAW fastq.gz folder info
+      ├── RAW_FOLDER_NAME_log_assembly_PRIMERSCHEME_HOSTNAME_YYYY-MM-DD.txt    ### assembly log analysis
+      ├── RAW_FOLDER_NAME_log_summary_HOSTNAME_YYYY-MM-DD.txt                  ### summary log analysis
+      ├── RAW_FOLDER_NAME_summary_HOSTNAME_YYYY-MM-DD.txt                      ### summary of statistics, pangolin and nextclade
+      └── RAW_FOLDER_NAME_update_HOSTNAME_YYYY-MM-DD.txt                       ### update dependencies log
 
 ----------
 Disclaimer
