@@ -13,7 +13,7 @@ Download and install the pipeline from the github repo:
 .. code:: bash
 
     git clone --recursive https://github.com/khourious/IGM_SARSCOV2.git; cd IGM_SARSCOV2
-    chmod 700 -R DEPENDENCIES
+    chmod 700 -R INSTALL
     bash INSTALL
 
 ------------------------------------
