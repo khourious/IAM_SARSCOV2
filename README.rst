@@ -20,14 +20,13 @@ Download and install the pipeline from the github repo:
 How to use the IGM_SARSCOV2 pipeline
 ------------------------------------
 
-* igm_sarscov2
-
 .. code:: bash
 
     igm_sarscov2 ARTIC_V4
 
-* You need to run the script **inside** the folder that contains the RAW fastq.gz files.
-* You need to set the PRIMER SCHEME used in the library preparation (i.e.: ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
+* You need to:
+    * Run the script **inside** the folder that contains the RAW fastq.gz files.
+    * Set the PRIMER SCHEME used in the library preparation (i.e.: ARTIC_V3, ARTIC_V4 or FIOCRUZ-IOC_V2).
 
 ----------
 Files info
@@ -97,6 +96,7 @@ Results info
 ----------
 Disclaimer
 ----------
+
 * If you use this workflow for academic purposes, please cite the principal repository and preprint article:
     * https://github.com/dezordi/ViralFlow
     * ViralFlow: an automated workflow for SARS-CoV-2 genome assembly, lineage assignment, mutations and intrahost variants detection. Filipe Zimmer Dezordi, Túlio de Lima Campos, Pedro Miguel Carneiro Jeronimo, Cleber Furtado Aksenen, Suzana Porto Almeida, Gabriel Luz Wallau. medRxiv 2021.10.01.21264424; doi: https://doi.org/10.1101/2021.10.01.21264424
