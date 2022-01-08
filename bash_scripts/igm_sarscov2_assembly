@@ -14,19 +14,19 @@ bg() {
 
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
-    if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info.txt" ]; then
+    if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F/ '{print $NF}')_folder_info.txt" ]; then
         echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_$(date +'%Y-%m-%d').txt"
     fi
 
-    find "$PWD" -type f -name "*.fastq.gz" | awk -F'/' '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
+    find "$PWD" -type f -name "*.fastq.gz" | awk -F/ '{print $(NF-1),$NF}' | tr '[:blank:]' '\t' | \
         awk '/.fastq.gz/d' >> "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_$(date +'%Y-%m-%d').txt"
 
     for i in $(find "$PWD" -type f -name "*_R1_*"); do
-        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F'/' '{print $NF}' | awk -F"-|_" '{print $1}')_R1.fastq.gz -v
+        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F/ '{print $NF}' | awk -F"-|_" '{print $1}')_R1.fastq.gz -v
     done
 
     for i in $(find "$PWD" -type f -name "*_R2_*"); do
-        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F'/' '{print $NF}' | awk -F"-|_" '{print $1}')_R2.fastq.gz -v
+        cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F/ '{print $NF}' | awk -F"-|_" '{print $1}')_R2.fastq.gz -v
     done
 
     source activate igm_sarscov2
