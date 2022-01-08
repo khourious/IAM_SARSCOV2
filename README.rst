@@ -35,23 +35,24 @@ Files info
 .. code-block:: text
 
     IGM_SARSCOV2/
-     ├── INSTALL                 ### script for install dependencies
-     ├── ARTIC_V3                ### ARTIC V3 primers
-     ├── ARTIC_V4                ### ARTIC V4 primers
-     ├── FIOCRUZ-IOC_V2          ### FIOCRUZ-IOC V2 primers
-     ├── MN908947.3.fasta        ### SARS-CoV-2 reference sequence
+     ├── INSTALL                   ### script for install dependencies
+     ├── ARTIC_V3                  ### ARTIC V3 primers
+     ├── ARTIC_V4                  ### ARTIC V4 primers
+     ├── FIOCRUZ-IOC_V2            ### FIOCRUZ-IOC V2 primers
+     ├── MN908947.3.fasta          ### SARS-CoV-2 reference sequence
      └── bash_scripts/
-      ├── igm_sarscov2           ### perform the genome assembly using ViralFlow script
-      ├── igm_sarscov2_summary   ### do statistics and run pangolin and nextclade (FIOCRUZ-IGM modifications)
-      ├── igm_sarscov2_update    ### script for update dependencies
-      ├── sars2_assembly         ### ViralFlow script (forked from dezordi/ViralFlow) - v.0.0.5
+      ├── igm_sarscov2             ### script for run the entire analysis
+      ├── igm_sarscov2_assembly    ### perform the genome assembly using partial ViralFlow script
+      ├── igm_sarscov2_summary     ### do statistics and run pangolin and nextclade
+      ├── igm_sarscov2_update      ### script for update dependencies
+      ├── sars2_assembly           ### ViralFlow script (forked from dezordi/ViralFlow) - v.0.0.5
      └── python_scripts/
-      ├── bwa_index.py           ### run bwa index
-      ├── bwa_mem.py             ### run bwa mem
-      ├── fastp.py               ### run fastp
-      ├── get_mvs.py             ### perform intrahost variant analysis with bam-readcount and intrahost.py
-      ├── intrahost.py           ### identify genomic positions with multi-allele frequencies
-      └── ivar.py                ### run iVar variant and iVar consensus
+      ├── bwa_index.py             ### run bwa index
+      ├── bwa_mem.py               ### run bwa mem
+      ├── fastp.py                 ### run fastp
+      ├── get_mvs.py               ### perform intrahost variant analysis with bam-readcount and intrahost.py
+      ├── intrahost.py             ### identify genomic positions with multi-allele frequencies
+      └── ivar.py                  ### run iVar variant and iVar consensus
 
 ------------
 Results info
