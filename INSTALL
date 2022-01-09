@@ -1,15 +1,14 @@
 #!/bin/bash
 
-chmod 700 -R $HOME/IGM_SARSCOV2/bash_scripts $HOME/IGM_SARSCOV2/python_scripts
+chmod 700 -R $HOME/IGM_SARSCOV2/scripts $HOME/IGM_SARSCOV2/ViralFlow
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
 
-if [[ -z "$(which igm_sarscov2)" ]]; then
-    echo 'export PATH=$HOME/IGM_SARSCOV2/bash_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
-    echo 'export PATH=$HOME/IGM_SARSCOV2/python_scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
+if [[ -z $(which igm_sarscov2) ]]; then
+    echo 'export PATH=$HOME/IGM_SARSCOV2/scripts:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
 fi
 
-if [[ -z "$(which conda)" ]]; then
+if [[ -z $(which conda) ]]; then
     cd
     wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
     bash Miniconda3-latest-Linux-x86_64.sh -bfp miniconda3
@@ -17,50 +16,33 @@ if [[ -z "$(which conda)" ]]; then
     echo 'export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
     export PATH=$HOME/miniconda3/bin:/usr/local/share/rsi/idl/bin:$PATH
     conda install -y -c conda-forge mamba
-    mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-    mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft numpy pandas samtools==1.10 seqkit seqtk zlib
-    mamba create -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults nextclade_js
-    mamba create -y -n pangolin -c conda-forge -c anaconda -c bioconda -c defaults pangolin
-    mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
-else
-    if [[ -z "$(which mamba)" ]]; then
-        conda install -y -c conda-forge mamba
-        mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/igm_sarscov2'")" ]]; then
-            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft numpy pandas samtools==1.10 seqkit seqtk zlib
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/nextclade'")" ]]; then
-            mamba create -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults nextclade_js
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/pangolin'")" ]]; then
-            mamba create -y -n pangolin -c conda-forge -c anaconda -c bioconda -c defaults pangolin
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/plot'")" ]]; then
-            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
-        fi
-    else
-        mamba update -y -c conda-forge -c anaconda -c bioconda -c defaults -n base conda
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/igm_sarscov2'")" ]]; then
-            mamba create -y -n igm_sarscov2 -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa exonerate fastp ivar mafft numpy pandas samtools==1.10 seqkit seqtk zlib
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/nextclade'")" ]]; then
-            mamba create -y -n nextclade -c conda-forge -c anaconda -c bioconda -c defaults nextclade_js
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/pangolin'")" ]]; then
-            mamba create -y -n pangolin -c conda-forge -c anaconda -c bioconda -c defaults pangolin
-        fi
-        if [[ -z "$(conda env list | grep "'/miniconda3/envs/plot'")" ]]; then
-            mamba create -y -n plot -c conda-forge -c anaconda -c bioconda -c defaults ghostscript numpy pandas pysam seaborn
-        fi
+    mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
+    mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
+    mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+elif [[ -z $(which mamba) ]]; then
+    conda install -y -c conda-forge mamba
+    mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
+    if [[ -z $(conda env list | grep igm-sars2_assembly) ]]; then
+        mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
     fi
+    if [[ -z $(conda env list | grep igm-sars2_summary) ]]; then
+        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+    fi
+elif [[ ! -z $(which mamba) ]]; then
+    if [[ -z $(conda env list | grep igm-sars2_assembly) ]]; then
+        mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
+    fi
+    if [[ -z $(conda env list | grep igm-sars2_summary) ]]; then
+        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+    fi
+    conda --version && mamba --version | sed '2d' && echo "" && echo "conda environments:" && conda env list | egrep 'igm-sars2'
 fi
 
-if [[ -z "$(which fastcov.py)" ]]; then
+if [[ -z $(which fastcov.py) ]]; then
     cd
     git clone https://github.com/RaverJay/fastcov
     cd fastcov
     echo 'export PATH=$HOME/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
 else
-    source activate plot
-    fastcov.py -h
+    echo "" && echo "RaverJay/fastcov v0.1.3"
 fi
