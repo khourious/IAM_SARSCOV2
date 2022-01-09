@@ -17,7 +17,7 @@ bg() {
 
     for i in $(find "$ANALYSISDIR" -type d -name "*.results" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | \
         sort -u); do
-            source activate igm_sarscov2
+            source activate igm-sars2_summary
             echo -n "#" | tr '#' '\n' >> "$ANALYSISDIR"/summary.tmp
             echo -n "$i""#" | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
             samtools view -c "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | awk '{printf $0"#"}' | \
@@ -75,7 +75,7 @@ bg() {
             cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv | sed -n 2p | tr ";" "\t" | \
                 awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | \
                 awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
-            source activate plot
+            source activate igm-sars2_summary
             fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam \
                 -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
         done
@@ -86,8 +86,6 @@ bg() {
     gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH \
         -sOUTPUTFILE="$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_coverage_$(uname -n)_$(date +'%Y-%m-%d').pdf \
         "$ANALYSISDIR"/*.results/*.pdf
-
-    source activate igm_sarscov2
 
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments \
         "$ANALYSISDIR"/preconsensus.tmp "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | seqkit grep -vip MN908947.3 | \

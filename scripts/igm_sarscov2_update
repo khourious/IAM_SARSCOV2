@@ -1,0 +1,15 @@
+#!/bin/bash
+
+ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
+
+[ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
+
+bg() {
+
+    mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
+    mamba update -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults --all
+    mamba update -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults --all
+
+}
+
+bg &>>"$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_update_$(uname -n)_$(date +'%Y-%m-%d').txt &

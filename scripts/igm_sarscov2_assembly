@@ -29,7 +29,7 @@ bg() {
         cp "$i" "$ANALYSISDIR"/$(echo "$i" | awk -F/ '{print $NF}' | awk -F"-|_" '{print $1}')_R2.fastq.gz -v
     done
 
-    source activate igm_sarscov2
+    source activate igm-sars2_assembly
 
     if [[ "$PRIMERSCHEME" == "RPIP" ]]; then
         for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | \
