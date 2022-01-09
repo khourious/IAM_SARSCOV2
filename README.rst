@@ -47,12 +47,12 @@ Files info
       ├── igm_sarscov2_update      ### script for update dependencies
       ├── sars2_assembly           ### ViralFlow script (forked from dezordi/ViralFlow) - v.0.0.5
      └── python_scripts/
-      ├── bwa_index.py             ### run bwa index
-      ├── bwa_mem.py               ### run bwa mem
-      ├── fastp.py                 ### run fastp
-      ├── get_mvs.py               ### perform intrahost variant analysis with bam-readcount and intrahost.py
-      ├── intrahost.py             ### identify genomic positions with multi-allele frequencies
-      └── ivar.py                  ### run iVar variant and iVar consensus
+      ├── bwa_index.py             ### run bwa index (forked from dezordi/ViralFlow) - v.0.0.5
+      ├── bwa_mem.py               ### run bwa mem (forked from dezordi/ViralFlow) - v.0.0.5
+      ├── fastp.py                 ### run fastp (forked from dezordi/ViralFlow) - v.0.0.5
+      ├── get_mvs.py               ### perform intrahost variant analysis with bam-readcount and intrahost.py (forked from dezordi/ViralFlow) - v.0.0.5
+      ├── intrahost.py             ### identify genomic positions with multi-allele frequencies (forked from dezordi/ViralFlow) - v.0.0.5
+      └── ivar.py                  ### run iVar variant and iVar consensus (forked from dezordi/ViralFlow) - v.0.0.5
 
 ------------
 Results info
@@ -62,28 +62,28 @@ Results info
 
     IGM_SARSCOV2/
      └── ANALYSIS/
-      ├── "$i"_R1.fastq.gz                                                     ### temporary copy of RAW R1 fastq.gz file
-      ├── "$i"_R2.fastq.gz                                                     ### temporary copy of RAW R2 fastq.gz file
-      └── "$i".results/
-       ├── "$i".R1.fq.gz                                                       ### trimmed R1 fastq.gz file
-       ├── "$i".R2.fq.gz                                                       ### trimmed R2 fastq.gz file
-       ├── "$i".coverage.pdf                                                   ### coverage plot
-       ├── "$i".depth10.amb.fa                                                 ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
-       ├── "$i".depth10.fa                                                     ### consensus defined with iVar
-       ├── "$i".depth10.fa.algn                                                ### alignment of consensus with reference sequence
-       ├── "$i".depth10.fa.algn.minor.fa                                       ### minor consensus genome
-       ├── "$i".depth10.fa.bc                                                  ### nucleotide frequencies by genomic position
-       ├── "$i".depth10.fa.bc.intrahost.short.tsv                              ### summary of minor variant informations
-       ├── "$i".depth10.fa.bc.intrahost.tsv                                    ### minor variant informations
-       ├── "$i".ivar60.qual.txt                                                ### iVar quality call consensus (frequency threshold: 0.60)
-       ├── "$i".lineage_report.csv                                             ### pangolin lineage analysis
-       ├── "$i".nextclade.csv                                                  ### nextclade analysis
-       ├── "$i".qual.txt                                                       ### iVar quality call consensus
-       ├── "$i".quality.html                                                   ### fastp quality control informations
-       ├── "$i".sorted.bam                                                     ### sorted bam file
-       ├── "$i".sorted.bam.bai                                                 ### index of sorted bam file
-       ├── "$i".time.txt                                                       ### time in minutes of each step of analysis
-       ├── "$i".tsv                                                            ### iVar with the frequencies of iSNVs
+      ├── SAMPLE_ID_R1.fastq.gz                                                     ### temporary copy of RAW R1 fastq.gz file
+      ├── SAMPLE_ID_R2.fastq.gz                                                     ### temporary copy of RAW R2 fastq.gz file
+      └── SAMPLE_ID.results/
+       ├── SAMPLE_ID.R1.fq.gz                                                       ### trimmed R1 fastq.gz file
+       ├── SAMPLE_ID.R2.fq.gz                                                       ### trimmed R2 fastq.gz file
+       ├── SAMPLE_ID.coverage.pdf                                                   ### coverage plot
+       ├── SAMPLE_ID.depth10.amb.fa                                                 ### consensus defined with iVar with ambiguous nucleotideos on positions where major allele frequencies correspond at least 60% of depth
+       ├── SAMPLE_ID.depth10.fa                                                     ### consensus defined with iVar
+       ├── SAMPLE_ID.depth10.fa.algn                                                ### alignment of consensus with reference sequence
+       ├── SAMPLE_ID.depth10.fa.algn.minor.fa                                       ### minor consensus genome
+       ├── SAMPLE_ID.depth10.fa.bc                                                  ### nucleotide frequencies by genomic position
+       ├── SAMPLE_ID.depth10.fa.bc.intrahost.short.tsv                              ### summary of minor variant informations
+       ├── SAMPLE_ID.depth10.fa.bc.intrahost.tsv                                    ### minor variant informations
+       ├── SAMPLE_ID.ivar60.qual.txt                                                ### iVar quality call consensus (frequency threshold: 0.60)
+       ├── SAMPLE_ID.lineage_report.csv                                             ### pangolin lineage analysis
+       ├── SAMPLE_ID.nextclade.csv                                                  ### nextclade analysis
+       ├── SAMPLE_ID.qual.txt                                                       ### iVar quality call consensus
+       ├── SAMPLE_ID.quality.html                                                   ### fastp quality control informations
+       ├── SAMPLE_ID.sorted.bam                                                     ### sorted bam file
+       ├── SAMPLE_ID.sorted.bam.bai                                                 ### index of sorted bam file
+       ├── SAMPLE_ID.time.txt                                                       ### time in minutes of each step of analysis
+       ├── SAMPLE_ID.tsv                                                            ### iVar with the frequencies of iSNVs
        └── fastp.json                                                          ### metafile of fastp quality control informations
       ├── RAW_FOLDER_NAME_consensus_HOSTNAME_YYYY-MM-DD.fasta                  ### multifasta with major consensus genomes
       ├── RAW_FOLDER_NAME_consensus_with_minor_HOSTNAME_YYYY-MM-DD.fasta       ### multifasta with major and minor consensus genomes
