@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #================================================================
 # HEADER
 #================================================================
@@ -18,7 +20,7 @@
 #%    <MIN_LEN>            -   Minimum length to trimm sequences
 #%    <ADAPTERS>           -   Fasta file with adapters used in the sequencing analysis
 #%    <DP_INTRAHOST>       -   Minimum depth to consider a intrahost minor allele, optional, default = 100
-#%    <TRIM_LEN>           -   Length to trimm front and tail of reads, optional, default = 0
+#%    <TRIMM_LEN>           -   Length to trimm front and tail of reads, optional, default = 0
 #%
 #% EXAMPLES
 #%    $bash sars2_assembly reference.fasta code_R1.fastq.gz code_R2.fastq.gz prefix_name 8 5 75 adapters.fa
@@ -31,10 +33,10 @@
 #%    iVar version 1.3.1
 #%    bam-readcount version: 0.8
 #%    Python 3.6.10
-#%    mafft v7.487 (2021/Jul/25)
+#%    mafft 7.490 (2021/Oct/30)
 #%    nextclade 0.14.4
-#%    pangolin 3.1.11
-#%    seqkit v2.0.0
+#%    pangolin 3.1.17
+#%    seqkit v2.1.0
 #%    seqtk 1.3-r106
 #%    exonerate version 2.4.0 Using glib version 2.68.0
 #%
@@ -72,42 +74,42 @@ TRIMM_LEN=${11-0} #length to trim front and tail reads with fastp
 # WORKFLOW
 #================================================================
 
-IGM_SARSCOV2=$HOME/IGM_SARSCOV2/python_scripts
+VIRALFLOWDIR=$HOME/IGM_SARSCOV2/ViralFlow
 ##CREATING INDEX OF REFERENCE GENOME
-python $IGM_SARSCOV2/bwa_index.py -in $FASTA
+python $VIRALFLOWDIR/bwa_index.py -in $FASTA
 ##CREATING DIRECTORY TO STORE RESULTS
-cd "$ANALYSISDIR"
+cd $ANALYSISDIR
 mkdir $PREFIXOUT.results/
 cd $PREFIXOUT.results
 ##QUALITY CHECK
 echo "fastp analysis:" > $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $IGM_SARSCOV2/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS -t $TRIMM_LEN
+python $VIRALFLOWDIR/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS -t $TRIMM_LEN
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
-analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
+analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##MAPPING
 echo "BWA and iVar analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $IGM_SARSCOV2/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
-python $IGM_SARSCOV2/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
+python $VIRALFLOWDIR/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
+python $VIRALFLOWDIR/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
-analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
+analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##GET PUTATIVE MINOR VARIANTS STEP
 echo "Minor variant analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $IGM_SARSCOV2/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS -di $DP_INTRAHOST
+python $VIRALFLOWDIR/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS -di $DP_INTRAHOST
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
-analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
+analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
 echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##GET LINEAGE AND MUTATIONS
 #echo "Nextclade and Pangolin analysis:" >> $PREFIXOUT.time.txt
 #start=$(date +%s%3N)
-#python $IGM_SARSCOV2/pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
+#python ../python_scripts/pango_nextclade.py -pr $PREFIXOUT -dp $DEPTH -p $THREADS
 #end=$(date +%s%3N)
 #analysis_in_miliseconds=$(expr $end - $start)
 #analysis_in_minutes="$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))"
@@ -115,7 +117,7 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##GET ASSEMBLY METRICS
 #echo "bamdst analysis:" >> $PREFIXOUT.time.txt
 #start=$(date +%s%3N)
-#python $IGM_SARSCOV2/assembly_metrics.py -pr $PREFIXOUT
+#python ../python_scripts/assembly_metrics.py -pr $PREFIXOUT
 #COV=$(seqtk comp $PREFIXOUT.depth$DEPTH.fa | awk '{x=$3+$4+$5+$6;y=$2;print $1,y-x,y,100-((y-x)/y)*100}' | cut -f 4 -d ' ')
 #printf "cov_$DEPTH%%\n$COV" > coverage.txt
 #paste chromosomes.report coverage.txt > chromosomes.report.tmp
