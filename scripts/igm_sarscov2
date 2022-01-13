@@ -4,19 +4,19 @@ PRIMERSCHEME="$1"
 
 bg() {
 
-    "$HOME"/IGM_SARSCOV2/bash_scripts/igm_sarscov2_update
+    "$HOME"/IGM_SARSCOV2/scripts/igm_sarscov2_update
 
     while [ ! -z "$(pgrep igm_sarscov2_up)" ]; do
         sleep 2
     done
 
-    "$HOME"/IGM_SARSCOV2/bash_scripts/igm_sarscov2_assembly "$1"
+    "$HOME"/IGM_SARSCOV2/scripts/igm_sarscov2_assembly "$1"
 
     while [ ! -z "$(pgrep igm_sarscov2_as)" ]; do
         sleep 2
     done
 
-    "$HOME"/IGM_SARSCOV2/bash_scripts/igm_sarscov2_summary
+    "$HOME"/IGM_SARSCOV2/scripts/igm_sarscov2_summary
 
 }
 
