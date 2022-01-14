@@ -10,7 +10,7 @@ bg() {
         sleep 2
     done
 
-    "$HOME"/IGM_SARSCOV2/scripts/igm_sarscov2_assembly "$1"
+    "$HOME"/IGM_SARSCOV2/scripts/igm_sarscov2_assembly "$PRIMERSCHEME"
 
     while [ ! -z "$(pgrep igm_sarscov2_as)" ]; do
         sleep 2
