@@ -32,23 +32,23 @@ bg() {
                 echo "$AVGDEPTH" | awk '{printf $0"#"}' | tr '#' '\t' | tr -d '\n' >> "$ANALYSISDIR"/summary.tmp
             fi
             paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | \
-                awk '{if ($3 > '"10"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | \
+                awk '{if ($3 > '"10"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | \
                 awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | awk '{printf $0"#"}' | \
                 tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
             paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | \
-                awk '{if ($3 > '"100"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | \
+                awk '{if ($3 > '"100"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | \
                 awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | awk '{printf $0"#"}' | \
                 tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
             paste <(samtools depth "$ANALYSISDIR"/"$i".results/"$i".sorted.bam | \
-                awk '{if ($3 > '"1000"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | \
+                awk '{if ($3 > '"1000"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | \
                 awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | awk '{printf $0"#"}' | \
                 tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
             NCOUNT=$(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}')
-            REVCOV=$(paste <(fastalength "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}') \
+            REVCOV=$(paste <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | awk '{print $1}') \
                 <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}') | \
                 awk -F"\t" '{printf("%0.2f\n", ($1-$2)/$1*100)}')
             NCOUNTPER=$(paste <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}') \
-                <(fastalength "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | awk '{print $1}')| \
+                <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | awk '{print $1}')| \
                 awk -F"\t" '{printf("%0.2f\n", ($1/$2)*100)}')
             if [[ "$NCOUNT" == 0 ]]; then
                 echo "0""#" | tr '#' '\t' | tr -d '\n' >> "$ANALYSISDIR"/summary.tmp
@@ -88,12 +88,12 @@ bg() {
         "$ANALYSISDIR"/*.results/*.pdf
 
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments \
-        "$ANALYSISDIR"/preconsensus.tmp "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | seqkit grep -vip MN908947.3 | \
+        "$ANALYSISDIR"/preconsensus.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep -vip MN908947.3 | \
         sed '/>/!y/atcgn-/ATCGNN/' >> \
         "$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_consensus_$(uname -n)_$(date +'%Y-%m-%d').fasta
 
     mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments \
-        "$ANALYSISDIR"/preconsensus_with_minor.tmp "$HOME"/IGM_SARSCOV2/MN908947.3.fasta | seqkit grep \
+        "$ANALYSISDIR"/preconsensus_with_minor.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep \
         -vip MN908947.3,MN908947.3_minor | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/preconsensus_with_minor_2.tmp
 
     seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp \
