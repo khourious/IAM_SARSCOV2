@@ -33,12 +33,12 @@ bg() {
 
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | \
         sort -u); do
-            bash "$HOME"/IGM_SARSCOV2/ViralFlow/sars2_assembly "$HOME"/IGM_SARSCOV2/MN908947.3.fasta \
+            bash "$HOME"/IGM_SARSCOV2/ViralFlow/sars2_assembly "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta \
                 "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" 10 "$MINLEN" \
-                "$HOME"/IGM_SARSCOV2/"$PRIMERSCHEME" "$ANALYSISDIR"
+                "$HOME"/IGM_SARSCOV2/primer_schemes/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
     done
 
-    rm -rf "$ANALYSISDIR"/*.fastq.gz "$HOME"/IGM_SARSCOV2/MN908947.3.fasta.*
+    rm -rf "$ANALYSISDIR"/*.fastq.gz "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta.*
 
     end=$(date +%s.%N)
 
