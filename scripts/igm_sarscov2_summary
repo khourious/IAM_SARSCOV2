@@ -43,11 +43,12 @@ bg() {
                 awk '{if ($3 > '"1000"') {print $0}}' | wc -l) <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | \
                 awk '{print $1}') | awk -F"\t" '{printf("%0.2f\n", $1/$2*100)}' | awk '{printf $0"#"}' | \
                 tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-            NCOUNT=$(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}')
+            DEPTH=$(find "$ANALYSISDIR" -type f -name "*depth*[0-9].fa" | sed '1q' | awk -F. '{print $(NF-1)}')
+            NCOUNT=$(seqtk comp "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa | awk -F"\t" '{print $9}')
             REVCOV=$(paste <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | awk '{print $1}') \
-                <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}') | \
+                <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa | awk -F"\t" '{print $9}') | \
                 awk -F"\t" '{printf("%0.2f\n", ($1-$2)/$1*100)}')
-            NCOUNTPER=$(paste <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i".depth10.fa | awk -F"\t" '{print $9}') \
+            NCOUNTPER=$(paste <(seqtk comp "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa | awk -F"\t" '{print $9}') \
                 <(fastalength "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | awk '{print $1}')| \
                 awk -F"\t" '{printf("%0.2f\n", ($1/$2)*100)}')
             if [[ "$NCOUNT" == 0 ]]; then
@@ -59,18 +60,18 @@ bg() {
                 echo "$NCOUNT" | awk '{printf $0"#"}' | tr '#' '\t' | tr -d '\n' >> "$ANALYSISDIR"/summary.tmp
                 echo "$NCOUNTPER" | awk '{printf $0"#"}' | tr '#' '\t' | tr -d '\n' >> "$ANALYSISDIR"/summary.tmp
             fi
-            cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus.tmp
-            cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
-            cat "$ANALYSISDIR"/"$i".results/"$i".depth10.fa.algn.minor.fa >> \
+            cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa >> "$ANALYSISDIR"/preconsensus.tmp
+            cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
+            cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa.algn.minor.fa >> \
                 "$ANALYSISDIR"/preconsensus_with_minor.tmp
             source activate pangolin
-            pangolin "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -t "$THREADS" \
+            pangolin "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -t "$THREADS" \
                 --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
             cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | \
                 awk -F, '{print $2"\t"$9"\t"$10}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
             source activate nextclade
             nextclade --version | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-            nextclade -i "$ANALYSISDIR"/"$i".results/"$i".depth10.fa -j "$THREADS" \
+            nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -j "$THREADS" \
                 -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
             cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv | sed -n 2p | tr ";" "\t" | \
                 awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | \

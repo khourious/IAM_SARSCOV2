@@ -2,6 +2,12 @@
 
 PRIMERSCHEME="$1"
 
+if [ ! -z "$2" ]; then
+    DEPTH="$2"
+else
+    DEPTH=10
+fi
+
 ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
@@ -10,9 +16,9 @@ bg() {
 
     start=$(date +%s.%N)
 
-    MINLEN="75"
-
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
+
+    MINLEN="75"
 
     if [ -z "$ANALYSISDIR"/"$(echo $PWD | awk -F/ '{print $NF}')_folder_info.txt" ]; then
         echo "folder#read" | tr '#' '\t' > "$ANALYSISDIR"/"$(echo $PWD | awk -F'/' '{print $NF}')_folder_info_$(date +'%Y-%m-%d').txt"
@@ -34,7 +40,7 @@ bg() {
     for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F_ '{print $1}' | \
         sort -u); do
             bash "$HOME"/IGM_SARSCOV2/ViralFlow/sars2_assembly "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta \
-                "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" 10 "$MINLEN" \
+                "$ANALYSISDIR"/"$i"_R1.fastq.gz "$ANALYSISDIR"/"$i"_R2.fastq.gz "$i" "$THREADS" "$DEPTH" "$MINLEN" \
                 "$HOME"/IGM_SARSCOV2/primer_schemes/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
     done
 
