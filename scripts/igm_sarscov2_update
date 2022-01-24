@@ -1,9 +1,5 @@
 #!/bin/bash
 
-ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
-
-[ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
-
 bg() {
 
     mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
@@ -14,4 +10,4 @@ bg() {
 
 }
 
-bg &>>"$ANALYSISDIR"/$(pwd | awk -F/ '{print $NF}')_update_$(uname -n)_$(date +'%Y-%m-%d').txt &
+bg &>>$HOME/IGM_SARSCOV2/UpdateDependencies_$(uname -n)_$(date +'%Y-%m-%d').txt &
