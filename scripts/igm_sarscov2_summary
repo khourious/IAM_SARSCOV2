@@ -1,6 +1,6 @@
 #!/bin/bash
 
-ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
+ANALYSISDIR="$HOME"/IGM_SARSCOV2/$(pwd | awk -F/ '{print $NF}')_ANALYSIS_"$DEPTH"x
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR"
 
