@@ -8,7 +8,7 @@ else
     DEPTH=10
 fi
 
-ANALYSISDIR="$HOME/IGM_SARSCOV2/ANALYSIS"
+ANALYSISDIR="$HOME"/IGM_SARSCOV2/$(pwd | awk -F/ '{print $NF}')_ANALYSIS_"$DEPTH"x
 
 [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
 
