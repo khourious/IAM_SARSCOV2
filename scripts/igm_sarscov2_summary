@@ -12,7 +12,7 @@ bg() {
 
     THREADS=$(lscpu | grep 'CPU(s):' | awk '{print $2}' | sed -n '1p' | awk '{print $1-2}')
 
-    [ ! -f "$ANALYSISDIR"/summary.tmp ] && echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#NCountPercent#PangolinVersion#PangoLearnVersion#PangoLineage#NextcladeVersion#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | \
+    [ ! -f "$ANALYSISDIR"/summary.tmp ] && echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#NCountPercent#PangoLineage#PangolinVersion#PangoLearnVersion#NextcladeVersion#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | \
         tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
 
     for i in $(find "$ANALYSISDIR" -type d -name "*.results" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | \
