@@ -17,6 +17,7 @@ Summary stats:
 
 Command line parameters:
   -d arg    Minimum depth to variant calling (default: 10).
+  -h        Print this help and exit.
   -i arg    Path containing the Illumina fastQ sequencing data.
   -p arg    Primer scheme name used for generate tiling amplicons (i.e. ARTIC_V4.1).
   -t arg    Max number of threads (default: all cores minus 2).
@@ -48,11 +49,11 @@ Fundação Oswaldo Cruz / Instituto Gonçalo Moniz - FIOCRUZ/BA
 exit -1
 }
 
-while getopts "d:i:p:t:uvw:" OPT; do
+while getopts "d:i:hp:t:uvw:" OPT; do
     case "$OPT" in
         d) DEPTH="$OPTARG";;
-        i) INPUT="$OPTARG";;
         h) usage;;
+        i) INPUT="$OPTARG";;
         p) PRIMERSCHEME="$OPTARG";;
         t) THREADS="$OPTARG";;
         u) update;;
