@@ -1,6 +1,6 @@
 #!/bin/bash
 
-chmod 700 -R $HOME/IGM_SARSCOV2/scripts $HOME/IGM_SARSCOV2/ViralFlow
+chmod 700 -R $HOME/IGM_SARSCOV2/scripts
 
 MYSHELL=$(echo $SHELL | awk -F/ '{print $NF}')
 

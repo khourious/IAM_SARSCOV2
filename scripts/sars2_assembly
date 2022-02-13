@@ -74,9 +74,8 @@ TRIMM_LEN=${11-0} #length to trim front and tail reads with fastp
 # WORKFLOW
 #================================================================
 
-VIRALFLOWDIR=$HOME/IGM_SARSCOV2/ViralFlow
 ##CREATING INDEX OF REFERENCE GENOME
-python $VIRALFLOWDIR/bwa_index.py -in $FASTA
+python $HOME/IGM_SARSCOV2/scripts/bwa_index.py -in $FASTA
 ##CREATING DIRECTORY TO STORE RESULTS
 cd $ANALYSISDIR
 mkdir $PREFIXOUT.results/
@@ -84,7 +83,7 @@ cd $PREFIXOUT.results
 ##QUALITY CHECK
 echo "fastp analysis:" > $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $VIRALFLOWDIR/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS -t $TRIMM_LEN
+python $HOME/IGM_SARSCOV2/scripts/fastp.py -f1 $FASTQ1 -f2 $FASTQ2 -pr $PREFIXOUT -mi $MIN_LEN -p $THREADS -a $ADAPTERS -t $TRIMM_LEN
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
@@ -92,8 +91,8 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##MAPPING
 echo "BWA and iVar analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $VIRALFLOWDIR/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
-python $VIRALFLOWDIR/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
+python $HOME/IGM_SARSCOV2/scripts/bwa_mem.py -f $FASTA -pr $PREFIXOUT -p $THREADS
+python $HOME/IGM_SARSCOV2/scripts/ivar.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
@@ -101,7 +100,7 @@ echo $analysis_in_minutes >> $PREFIXOUT.time.txt
 ##GET PUTATIVE MINOR VARIANTS STEP
 echo "Minor variant analysis:" >> $PREFIXOUT.time.txt
 start=$(date +%s%3N)
-python $VIRALFLOWDIR/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS -di $DP_INTRAHOST
+python $HOME/IGM_SARSCOV2/scripts/get_mvs.py -f $FASTA -pr $PREFIXOUT -dp $DEPTH -p $THREADS -di $DP_INTRAHOST
 end=$(date +%s%3N)
 analysis_in_miliseconds=$(expr $end - $start)
 analysis_in_minutes=$(($analysis_in_miliseconds / 60000)).$(($analysis_in_miliseconds % 60000))
