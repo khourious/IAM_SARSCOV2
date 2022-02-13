@@ -149,7 +149,7 @@ Results info
       ├── LIBRARYNAME.folder_info.HOSTNAME.YYYY-MM-DD.txt                                ### RAW fastq.gz folder info
       ├── LIBRARYNAME.PRIMERSCHEME.consensus.HOSTNAME.YYYY-MM-DD.fasta                   ### multifasta with major consensus genomes
       ├── LIBRARYNAME.PRIMERSCHEME.consensus_with_minor.HOSTNAME.YYYY-MM-DD.fasta        ### multifasta with major and minor consensus genomes
-      ├── LIBRARYNAME.PRIMERSCHEME.coverage_HOSTNAME.YYYY-MM-DD.pdf                      ### library coverage plot
+      ├── LIBRARYNAME.PRIMERSCHEME.coverage.HOSTNAME.YYYY-MM-DD.pdf                      ### library coverage plot
       ├── LIBRARYNAME.PRIMERSCHEME.log.HOSTNAME.YYYY-MM-DD.txt                           ### log analysis
       └── LIBRARYNAME.PRIMERSCHEME.summary.HOSTNAME.YYYY-MM-DD.txt                       ### summary of statistics, pangolin and nextclade
 
