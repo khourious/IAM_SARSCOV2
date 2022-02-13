@@ -68,6 +68,12 @@ if [[ -z "$DEPTH" ]]; then
     DEPTH=10
 fi
 
+if [[ "$PRIMERSCHEME" == "RPIP" ]]; then
+    if [[ -z "$HOME"/IGM_SARSCOV2/primer_schemes/RPIP.fasta ]]; then
+        touch "$HOME"/IGM_SARSCOV2/primer_schemes/RPIP.fasta
+    fi
+fi
+
 if [[ ! -z "$WORKFLOW" ]]; then
     if [[ "$WORKFLOW" == "1" ]]; then
         if [[ -z "$INPUT" ]] || [[ -z "$PRIMERSCHEME" ]]; then
@@ -75,7 +81,7 @@ if [[ ! -z "$WORKFLOW" ]]; then
         else
             LIBRARY_NAME=$(basename "$INPUT")
             ANALYSISDIR="$HOME"/IGM_SARSCOV2/"$LIBRARY_NAME"_ANALYSIS
-            [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
+            [[ ! -d "$ANALYSISDIR" ]] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
             echo "" && echo "Output path: "$ANALYSISDIR""
             echo "" && echo "Log Analysis: "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
             echo "" && echo "To display the log output in fulscreen: watch tail -n 20 "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
@@ -86,7 +92,7 @@ if [[ ! -z "$WORKFLOW" ]]; then
         else
             LIBRARY_NAME=$(basename "$INPUT")
             ANALYSISDIR="$HOME"/IGM_SARSCOV2/"$LIBRARY_NAME"_ANALYSIS
-            [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
+            [[ ! -d "$ANALYSISDIR" ]] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
             echo "" && echo "Output path: "$ANALYSISDIR""
             echo "" && echo "Log Analysis: "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
             echo "" && echo "To display the log output in fulscreen: watch tail -n 20 "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
@@ -97,7 +103,7 @@ if [[ ! -z "$WORKFLOW" ]]; then
         else
             LIBRARY_NAME=$(basename "$INPUT")
             ANALYSISDIR="$HOME"/IGM_SARSCOV2/"$LIBRARY_NAME"_ANALYSIS
-            [ ! -d "$ANALYSISDIR" ] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
+            [[ ! -d "$ANALYSISDIR" ]] && mkdir "$ANALYSISDIR" && chmod 700 -R "$ANALYSISDIR"
             echo "" && echo "Output path: "$ANALYSISDIR""
             echo "" && echo "Log Analysis: "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
             echo "" && echo "To display the log output in fulscreen: watch tail -n 20 "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".log.$(uname -n).$(date +'%Y-%m-%d').txt"
@@ -175,7 +181,7 @@ bg() {
                 gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".coverage.$(uname -n).$(date +'%Y-%m-%d').pdf "$ANALYSISDIR"/*.results/*.pdf
                 mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments "$ANALYSISDIR"/preconsensus.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep -vip MN908947.3 | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".consensus.$(uname -n).$(date +'%Y-%m-%d').fasta
                 mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments "$ANALYSISDIR"/preconsensus_with_minor.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep -vip MN908947.3,MN908947.3_minor | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/preconsensus_with_minor_2.tmp
-                seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp -o "$ANALYSISDIR"/"$LIBRARY_NAME".consensus_with_minor.$(uname -n).$(date +'%Y-%m-%d').fasta
+                seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp -o "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".consensus_with_minor.$(uname -n).$(date +'%Y-%m-%d').fasta
             fi
         elif [[ "$WORKFLOW" == "2" ]]; then
             if [[ -z "$INPUT" ]] || [[ -z "$PRIMERSCHEME" ]]; then
@@ -243,7 +249,7 @@ bg() {
                 gs -dSAFER -r3000 -sDEVICE=pdfwrite -dNOPAUSE -dBATCH -sOUTPUTFILE="$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".coverage.$(uname -n).$(date +'%Y-%m-%d').pdf "$ANALYSISDIR"/*.results/*.pdf
                 mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments "$ANALYSISDIR"/preconsensus.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep -vip MN908947.3 | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".consensus.$(uname -n).$(date +'%Y-%m-%d').fasta
                 mafft --thread "$THREADS" --quiet --auto --keeplength --inputorder --6merpair --leavegappyregion --addfragments "$ANALYSISDIR"/preconsensus_with_minor.tmp "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta | seqkit grep -vip MN908947.3,MN908947.3_minor | sed '/>/!y/atcgn-/ATCGNN/' >> "$ANALYSISDIR"/preconsensus_with_minor_2.tmp
-                seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp -o "$ANALYSISDIR"/"$LIBRARY_NAME".consensus_with_minor.$(uname -n).$(date +'%Y-%m-%d').fasta
+                seqkit sort -n "$ANALYSISDIR"/preconsensus_with_minor_2.tmp -o "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".consensus_with_minor.$(uname -n).$(date +'%Y-%m-%d').fasta
             fi
         else
             usage
