@@ -52,6 +52,7 @@ while getopts "d:i:p:t:uvw:" OPT; do
     case "$OPT" in
         d) DEPTH="$OPTARG";;
         i) INPUT="$OPTARG";;
+        h) usage;;
         p) PRIMERSCHEME="$OPTARG";;
         t) THREADS="$OPTARG";;
         u) update;;
