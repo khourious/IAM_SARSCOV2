@@ -140,7 +140,7 @@ bg() {
                 for i in $(find "$ANALYSISDIR" -type f -name "*.fastq.gz" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | sort -u); do
                     bash "$HOME"/IGM_SARSCOV2/scripts/sars2_assembly "$HOME"/IGM_SARSCOV2/ref_seq/MN908947.3.fasta "$ANALYSISDIR"/"$i".R1.fastq.gz "$ANALYSISDIR"/"$i".R2.fastq.gz "$i" "$THREADS" "$DEPTH" 75 "$HOME"/IGM_SARSCOV2/primer_schemes/"$PRIMERSCHEME".fasta "$ANALYSISDIR"
                 done
-                [[ ! -f "$ANALYSISDIR"/summary.tmp ]] && echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#NCountPercent#PangolinVersion#PangoLearnVersion#PangoLineage#NextcladeVersion#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
+                [[ ! -f "$ANALYSISDIR"/summary.tmp ]] && echo "biobanco_seq#num_total_reads#num_mapp_reads#avg_depth#depth_10x#depth_100x#depth_1000x#ref_cov#ncount#ncount_perc#pango_ver#pango_learn_ver#pango_lin#nextclade_ver#clade#nucl_substitutions#nucl_deletions#nucl_inserc#nucl_missing#aa_substitutions#aa_deletions" | tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
                 source activate igm-sars2_summary
                 for i in $(find "$ANALYSISDIR" -type d -name "*.results" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | sort -u); do
                     echo -n "#" | tr '#' '\n' >> "$ANALYSISDIR"/summary.tmp
@@ -173,10 +173,10 @@ bg() {
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     pangolin "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $9"\t"$10"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
+                    cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $10"\t"$9"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
                     nextclade --version | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -j "$THREADS" -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv | sed -n 2p | tr ";" "\t" | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -j "$THREADS" -t "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv
+                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
                     fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
                 done
                 sed '/^[[:space:]]*$/d' "$ANALYSISDIR"/summary.tmp > "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".depth"$DEPTH"X.summary.$(uname -n).$(date +'%Y-%m-%d').txt
@@ -208,7 +208,7 @@ bg() {
             if [[ -z "$INPUT" ]]; then
                 usage
             else
-                [[ ! -f "$ANALYSISDIR"/summary.tmp ]] && echo "SampleId#NumberTotalReads#NumberReadsMapped#AverageDepth#Depth10x#Depth100x#Depth1000x#ReferenceCoverage#NCount#NCountPercent#PangolinVersion#PangoLearnVersion#PangoLineage#NextcladeVersion#Clade#Substitutions#Deletions#Insertions#Missing#aaSubstitutions#aaDeletions" | tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
+                [[ ! -f "$ANALYSISDIR"/summary.tmp ]] && echo "biobanco_seq#num_total_reads#num_mapp_reads#avg_depth#depth_10x#depth_100x#depth_1000x#ref_cov#ncount#ncount_perc#pango_ver#pango_learn_ver#pango_lin#nextclade_ver#clade#nucl_substitutions#nucl_deletions#nucl_inserc#nucl_missing#aa_substitutions#aa_deletions" | tr '#' '\t' > "$ANALYSISDIR"/summary.tmp
                 source activate igm-sars2_summary
                 for i in $(find "$ANALYSISDIR" -type d -name "*.results" | awk -F/ '{print $NF}' | awk -F. '{print $1}' | sort -u); do
                     echo -n "#" | tr '#' '\n' >> "$ANALYSISDIR"/summary.tmp
@@ -241,10 +241,10 @@ bg() {
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     pangolin "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $9"\t"$10"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
+                    cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $10"\t"$9"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
                     nextclade --version | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -j "$THREADS" -c "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.csv | sed -n 2p | tr ";" "\t" | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTH".fa -j "$THREADS" -t "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv
+                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
                     fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
                 done
                 sed '/^[[:space:]]*$/d' "$ANALYSISDIR"/summary.tmp > "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".depth"$DEPTH"X.summary.$(uname -n).$(date +'%Y-%m-%d').txt
