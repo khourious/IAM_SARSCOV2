@@ -43,7 +43,7 @@ if [[ -z $(which fastcov.py) ]]; then
     git clone https://github.com/RaverJay/fastcov
     cd fastcov
     echo 'export PATH=$HOME/fastcov:/usr/local/share/rsi/idl/bin:$PATH' >> $HOME/."$MYSHELL"rc
-    echo "" && echo "RaverJay/fastcov v0.1.3"
+    echo "" && echo "RaverJay/fastcov v.0.1.3"
 else
-    echo "" && echo "RaverJay/fastcov v0.1.3"
+    echo "" && echo "RaverJay/fastcov v.0.1.3"
 fi
