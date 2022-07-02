@@ -23,7 +23,7 @@ This repository contains a forked from **dezordi/ViralFlow** of a set of scripts
       -d arg    Minimum depth to variant calling (default: 10).
       -h        Print this help and exit.
       -i arg    Path containing the Illumina fastQ sequencing data.
-      -p arg    Primer scheme name used for generate tiling amplicons (i.e. ARTIC_V4.1).
+      -p arg    Primer scheme name used for generate tiling amplicons (i.e. ARTIC_V4-1).
       -t arg    Max number of threads (default: all cores minus 2).
       -u        Update conda dependencies.
       -v        Display version information and check for update.
