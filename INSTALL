@@ -18,7 +18,7 @@ if [[ -z $(which conda) ]]; then
     conda install -y -c conda-forge mamba
     mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
     mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
-    mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+    mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
 elif [[ -z $(which mamba) ]]; then
     conda install -y -c conda-forge mamba
     mamba update -y -n base -c conda-forge -c anaconda -c bioconda -c defaults conda
@@ -26,14 +26,14 @@ elif [[ -z $(which mamba) ]]; then
         mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
     fi
     if [[ -z $(conda env list | grep igm-sars2_summary) ]]; then
-        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
     fi
 elif [[ ! -z $(which mamba) ]]; then
     if [[ -z $(conda env list | grep igm-sars2_assembly) ]]; then
         mamba create -y -n igm-sars2_assembly -c conda-forge -c anaconda -c bioconda -c defaults argparse bam-readcount biopython bwa fastp ivar mafft numpy pandas samtools==1.10
     fi
     if [[ -z $(conda env list | grep igm-sars2_summary) ]]; then
-        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade_js numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
+        mamba create -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults exonerate ghostscript mafft nextclade numpy pandas pangolin pysam samtools==1.10 seaborn seqkit seqtk
     fi
     conda --version && mamba --version | sed '2d' && echo "" && echo "conda environments:" && conda env list | egrep 'igm-sars2'
 fi
