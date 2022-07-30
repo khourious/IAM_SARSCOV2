@@ -33,6 +33,9 @@ update () {
     mamba update -y -n igm-sars2_summary -c conda-forge -c anaconda -c bioconda -c defaults --all
     source activate igm-sars2_summary
     pangolin --update
+    rm -rf $HOME/IGM_SARSCOV2/nextclade_sc2_*
+    mkdir $HOME/IGM_SARSCOV2/nextclade_sc2_$(date +'%Y-%m-%d')
+    nextclade dataset get --name 'sars-cov-2' --output-dir $HOME/IGM_SARSCOV2/nextclade_sc2_$(date +'%Y-%m-%d')
 exit -1
 }
 
@@ -40,7 +43,7 @@ version () {
     echo "
 IGM_SARSCOV2
 ------------
-Updated 12 Feb 2022
+Updated 30 Jul 2022
 Using ViralFlow v0.0.5 (https://github.com/dezordi/ViralFlow)
 
 Laboratório de Enfermidades Infecciosas Transmitidas por Vetores - LEITV
@@ -71,7 +74,7 @@ if [[ -z "$DEPTH" ]]; then
 fi
 
 if [[ "$PRIMERSCHEME" == "RPIP" ]]; then
-    if [[ -z "$HOME"/IGM_SARSCOV2/primer_schemes/RPIP.fasta ]]; then
+    if [[ ! -z "$HOME"/IGM_SARSCOV2/primer_schemes/RPIP.fasta ]]; then
         touch "$HOME"/IGM_SARSCOV2/primer_schemes/RPIP.fasta
     fi
 fi
@@ -174,9 +177,9 @@ bg() {
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     pangolin "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
                     cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $10"\t"$9"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade --version | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa -j "$THREADS" -t "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade --version | awk '{print $2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade run --input-dataset $HOME/IGM_SARSCOV2/nextclade_sc2_$(date +'%Y-%m-%d') --output-tsv="$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa
+                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$16"\t"$17"\t"$18"\t"$30"\t"$27"\t"$28}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
                     fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
                 done
                 sed '/^[[:space:]]*$/d' "$ANALYSISDIR"/summary.tmp > "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".depth"$DEPTH"X.summary.$(uname -n).$(date +'%Y-%m-%d').txt
@@ -242,9 +245,9 @@ bg() {
                     cat "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa.algn.minor.fa >> "$ANALYSISDIR"/preconsensus_with_minor.tmp
                     pangolin "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa -t "$THREADS" --outfile "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv
                     cat "$ANALYSISDIR"/"$i".results/"$i".lineage_report.csv | sed -n 2p | awk -F, '{print $10"\t"$9"\t"$2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade --version | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
-                    nextclade -i "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa -j "$THREADS" -t "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv
-                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$11"\t"$12"\t"$13"\t"$14"\t"$17"\t"$19}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade --version | awk '{print $2}' | awk '{printf $0"#"}' | tr '#' '\t' >> "$ANALYSISDIR"/summary.tmp
+                    nextclade run --input-dataset $HOME/IGM_SARSCOV2/nextclade_sc2_$(date +'%Y-%m-%d') --output-tsv="$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv "$ANALYSISDIR"/"$i".results/"$i"."$DEPTHX".fa
+                    cat "$ANALYSISDIR"/"$i".results/"$i".nextclade.tsv | sed -n 2p | awk -F"\t" '{print $2"\t"$16"\t"$17"\t"$18"\t"$30"\t"$27"\t"$28}' | awk '{printf $0}' >> "$ANALYSISDIR"/summary.tmp
                     fastcov.py -l "$ANALYSISDIR"/"$i".results/"$i".sorted.bam -o "$ANALYSISDIR"/"$i".results/"$i".coverage.pdf
                 done
                 sed '/^[[:space:]]*$/d' "$ANALYSISDIR"/summary.tmp > "$ANALYSISDIR"/"$LIBRARY_NAME"."$PRIMERSCHEME".depth"$DEPTH"X.summary.$(uname -n).$(date +'%Y-%m-%d').txt
