@@ -1,6 +1,12 @@
-************
+**********
+DEPRECATED
+**********
+
+**Oct 2022 update:** This repo is no longer supported, please consider using https://github.com/khourious/vigeas instead.
+
+------------
 IGM_SARSCOV2
-************
+------------
 
 This repository contains a forked from **dezordi/ViralFlow** of a set of scripts to performs a reference guided genome assembly of SARS-CoV-2 created by Filipe Dezordi and Gabriel Wallau (FIOCRUZ-IAM).
 
